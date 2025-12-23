@@ -6,7 +6,7 @@
     <title data-i18n="pageTitle">Santa's Infinite Gift Box | 聖誕老人的無限禮物盒</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" integrity="sha512-FDcVY+g7vc5ksb8VeM12kQI5hrvoz7ySIQR7kbf6PyYl4l+tYqLNHOXf+L7FxyWd+Iqsj+r+M3Jq+v1W4Z9wIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 
     <style>
         :root {
@@ -30,7 +30,7 @@
             overflow-x: hidden;
         }
 
-        /* --- 語言切換器 --- */
+        /* 語言切換器 */
         .lang-switcher {
             position: absolute;
             top: 15px;
@@ -53,7 +53,7 @@
             font-weight: bold;
         }
 
-        /* 雪花飄落動畫 */
+        /* 雪花動畫 */
         .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
         .snowflake { position: absolute; color: #fff; font-size: 1em; opacity: 0.8; }
 
@@ -181,7 +181,6 @@
         }
         @keyframes glow { from { box-shadow: 0 0 10px var(--xmas-gold); } to { box-shadow: 0 0 30px var(--xmas-gold), 0 0 10px var(--xmas-red); } }
         
-        /* Footer Links Styles */
         .footer-links {
             margin-top: 30px; 
             font-size: 0.85em; 
@@ -201,7 +200,6 @@
             color: #fff;
             border-bottom-style: solid;
         }
-        .footer-divider { margin: 0 10px; color: #555; }
     </style>
 </head>
 <body>
@@ -330,11 +328,11 @@
             connectBtn: "🎄 連結錢包，領取驚喜 (Connect)",
             rulesSummary: "📜 來自聖誕老人的遊戲說明書 (點擊展開)",
             rulesIntro: "歡迎來到北極最刺激的禮物爭奪戰！規則很簡單，但充滿驚喜：",
-            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class="highlight">20 CRO</span>。",
+            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。",
             rule2: "💰 <b>資金去向：</b> 80% 進入這個巨大的禮物盒(獎池)，10% 立即分給之前的參與者，10% 由聖誕老人保管(開發與黑洞)。",
-            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class="highlight">80% 大獎</span>！",
+            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class='highlight'>80% 大獎</span>！",
             rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！",
-            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class="highlight">12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class="highlight">50% 的獎金平分</span>給所有許過願的好孩子！",
+            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class='highlight'>12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class='highlight'>50% 的獎金平分</span>給所有許過願的好孩子！",
             ruleFooter: "\"記得，每次許願後要休息 35 秒喔！\"",
             labelPot: "🎁 當前累積禮物盒 (Grand Prize Pot)",
             labelTimer: "⏰ 距離開獎剩下 (Time Remaining)",
@@ -595,6 +593,13 @@
 
     // Start the Protocol Countdown immediately
     startProtocolCountdown();
+    
+    // Check if ethers is loaded immediately
+    window.onload = function() {
+         if (typeof ethers === 'undefined') {
+             alert("⚠️ 錯誤：核心檔案加載失敗 (Ethers Library Missing)！\n請嘗試：\n1. 重新整理網頁\n2. 關閉 AdBlock 或 VPN\n3. 使用其他瀏覽器");
+         }
+    };
 
     async function connectWallet() {
         if (!window.ethereum) { alert(translations[currentLang].alertNoWallet); return; }
