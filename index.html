@@ -621,7 +621,8 @@
 
         } catch (error) {
             console.error(error);
-            alert("Connection Failed");
+            // 讓錯誤訊息直接顯示出來，我們才知道錯在哪
+            alert("連接失敗 (Connection Error):\n" + (error.reason || error.message || error));
         }
     }
 
