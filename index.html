@@ -60,7 +60,7 @@
         .btn-outline { background: rgba(248, 178, 41, 0.2); border: 2px solid var(--xmas-gold); color: var(--xmas-gold); margin-top: 15px; }
         .btn-outline:hover { background: rgba(248, 178, 41, 0.4); }
 
-        .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; }
+        .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; color: white; cursor: pointer; border-radius: 5px; }
 
         /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
@@ -171,7 +171,7 @@
     <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
+        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 平分獎金！</div>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -528,12 +528,15 @@
         "event ChristmasProtocolTriggered(uint256 indexed roundId, uint256 totalDistribute, uint256 perShare)"
     ];
 
-    // 🔴 變數改名，避免衝突
-    let gameProvider, gameSigner, gameContract;
-    let userAddress = null;
-    let currentRoundId = 1;
-    let countdownInterval;
-    let protocolInterval;
+    // 🔴 變數改名 + 改用 var 避免初始化錯誤
+    var gameProvider = null;
+    var gameSigner = null;
+    var gameContract = null;
+    
+    var userAddress = null;
+    var currentRoundId = 1;
+    var countdownInterval;
+    var protocolInterval;
 
     document.getElementById('contract-link').href = EXPLORER_URL;
 
@@ -552,7 +555,7 @@
         try {
             if (typeof ethers === 'undefined') throw new Error("Ethers.js library not loaded.");
 
-            // 🔴 使用 gameProvider
+            // 🔴 使用 gameProvider + var，不再使用 let/const
             gameProvider = new ethers.providers.Web3Provider(window.ethereum);
             await gameProvider.send("eth_requestAccounts", []);
             gameSigner = gameProvider.getSigner();
@@ -768,7 +771,7 @@
                 const h = Math.floor((diff % 86400) / 3600);
                 const m = Math.floor((diff % 3600) / 60);
                 const s = diff % 60;
-                timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
     }
@@ -833,3 +836,4 @@
 </script>
 </body>
 </html>
+
