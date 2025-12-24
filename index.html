@@ -31,127 +31,45 @@
         }
 
         /* 語言切換器 */
-        .lang-switcher {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 10;
-        }
-        .lang-btn {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--xmas-gold);
-            color: var(--xmas-gold);
-            padding: 5px 10px;
-            margin-left: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        .lang-btn.active {
-            background: var(--xmas-gold);
-            color: var(--bg-dark);
-            font-weight: bold;
-        }
+        .lang-switcher { position: absolute; top: 15px; right: 15px; z-index: 10; }
+        .lang-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--xmas-gold); color: var(--xmas-gold); padding: 5px 10px; margin-left: 5px; cursor: pointer; border-radius: 5px; font-size: 0.9em; }
+        .lang-btn.active { background: var(--xmas-gold); color: var(--bg-dark); font-weight: bold; }
 
         /* 雪花動畫 */
         .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
         .snowflake { position: absolute; color: #fff; font-size: 1em; opacity: 0.8; }
 
-        h1 {
-            font-family: 'Mountains of Christmas', cursive;
-            font-size: 3em;
-            margin-bottom: 10px;
-            color: var(--xmas-gold);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
+        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3em; margin-bottom: 10px; color: var(--xmas-gold); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .santa-icon { font-size: 3em; display: block; margin-bottom: -10px; margin-top: 30px; }
         .subtitle { font-size: 1.1em; color: #e2e2e2; margin-bottom: 30px; font-style: italic; }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
+        .container { max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
 
-        .card {
-            background: var(--card-bg);
-            border: 3px solid var(--xmas-red);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
+        .card { background: var(--card-bg); border: 3px solid var(--xmas-red); border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
         .card::before { content: '❄️'; position: absolute; top: 10px; left: 10px; opacity: 0.5; font-size: 1.5em; }
         .card::after { content: '🎁'; position: absolute; bottom: 10px; right: 10px; opacity: 0.5; font-size: 1.5em; }
 
-        .pot-display {
-            font-family: 'Mountains of Christmas', cursive;
-            font-size: 3em;
-            font-weight: bold;
-            color: var(--xmas-gold);
-            text-shadow: 0 0 15px rgba(248, 178, 41, 0.6);
-            margin: 15px 0;
-        }
+        .pot-display { font-family: 'Mountains of Christmas', cursive; font-size: 3em; font-weight: bold; color: var(--xmas-gold); text-shadow: 0 0 15px rgba(248, 178, 41, 0.6); margin: 15px 0; }
+        .timer-display { font-size: 1.8em; font-weight: bold; font-family: monospace; background: rgba(195, 15, 22, 0.6); padding: 5px 15px; border-radius: 10px; display: inline-block; margin: 10px 0; }
 
-        .timer-display {
-            font-size: 1.8em;
-            font-weight: bold;
-            font-family: monospace;
-            background: rgba(195, 15, 22, 0.6);
-            padding: 5px 15px;
-            border-radius: 10px;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        .btn {
-            background: linear-gradient(to bottom, var(--xmas-red), #8a0b0f);
-            color: var(--snow-white);
-            border: 2px solid var(--xmas-gold);
-            padding: 15px 30px;
-            font-size: 1.3em;
-            font-weight: bold;
-            border-radius: 15px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-            box-shadow: 0 4px 0 #5c070a, 0 5px 10px rgba(0,0,0,0.4);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            font-family: 'Mountains of Christmas', 'Noto Sans JP', 'Noto Sans KR', cursive;
-        }
-
+        .btn { background: linear-gradient(to bottom, var(--xmas-red), #8a0b0f); color: var(--snow-white); border: 2px solid var(--xmas-gold); padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 15px; cursor: pointer; width: 100%; transition: all 0.2s; box-shadow: 0 4px 0 #5c070a, 0 5px 10px rgba(0,0,0,0.4); text-shadow: 1px 1px 2px rgba(0,0,0,0.5); font-family: 'Mountains of Christmas', 'Noto Sans JP', 'Noto Sans KR', cursive; }
         .btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 0 #5c070a, 0 7px 12px rgba(0,0,0,0.5); }
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #5c070a, 0 3px 5px rgba(0,0,0,0.5); }
         .btn:disabled { background: #555; border-color: #333; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        .btn-outline {
-            background: rgba(248, 178, 41, 0.2);
-            border: 2px solid var(--xmas-gold);
-            color: var(--xmas-gold);
-            margin-top: 15px;
-        }
+        .btn-outline { background: rgba(248, 178, 41, 0.2); border: 2px solid var(--xmas-gold); color: var(--xmas-gold); margin-top: 15px; }
         .btn-outline:hover { background: rgba(248, 178, 41, 0.4); }
 
-        .rules-container details {
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: left;
-            border: 2px dashed var(--xmas-gold);
-        }
-        .rules-container summary {
-            font-weight: bold;
-            cursor: pointer;
-            color: var(--xmas-gold);
-            font-size: 1.1em;
-            outline: none;
-        }
+        /* 歷史紀錄表格樣式 */
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
+        .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); }
+        .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .history-table tr:last-child td { border-bottom: none; }
+        .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+        .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
+
+        .rules-container details { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; border: 2px dashed var(--xmas-gold); }
+        .rules-container summary { font-weight: bold; cursor: pointer; color: var(--xmas-gold); font-size: 1.1em; outline: none; }
         .rules-content { margin-top: 15px; line-height: 1.6; font-size: 0.95em; }
         .rules-content li { margin-bottom: 8px; }
         .highlight { color: var(--xmas-gold); font-weight: bold; }
@@ -161,45 +79,14 @@
         .stat-label { font-size: 0.9em; color: #bbb; }
         .stat-value { font-size: 1.2em; font-weight: bold; color: var(--snow-white); }
 
-        #wallet-address {
-            font-family: monospace;
-            background: rgba(255,255,255,0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            display: inline-block;
-            margin-bottom: 20px;
-            border: 1px solid var(--xmas-gold);
-        }
-
+        #wallet-address { font-family: monospace; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; font-size: 0.9em; display: inline-block; margin-bottom: 20px; border: 1px solid var(--xmas-gold); }
         .hidden { display: none; }
-        
-        .protocol-active {
-            border: 4px solid var(--xmas-gold);
-            animation: glow 2s infinite alternate;
-            background: linear-gradient(to bottom, #c30f16, #8a0b0f);
-        }
+        .protocol-active { border: 4px solid var(--xmas-gold); animation: glow 2s infinite alternate; background: linear-gradient(to bottom, #c30f16, #8a0b0f); }
         @keyframes glow { from { box-shadow: 0 0 10px var(--xmas-gold); } to { box-shadow: 0 0 30px var(--xmas-gold), 0 0 10px var(--xmas-red); } }
         
-        .footer-links {
-            margin-top: 30px; 
-            font-size: 0.85em; 
-            color: #aaa; 
-            line-height: 1.8;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .footer-links a {
-            color: var(--xmas-gold); 
-            text-decoration: none; 
-            border-bottom: 1px dotted var(--xmas-gold);
-            transition: all 0.2s;
-        }
-        .footer-links a:hover {
-            color: #fff;
-            border-bottom-style: solid;
-        }
+        .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
+        .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
+        .footer-links a:hover { color: #fff; border-bottom-style: solid; }
     </style>
 </head>
 <body>
@@ -298,6 +185,22 @@
         <button class="btn btn-outline" onclick="withdraw()" id="withdraw-btn" data-i18n="withdrawBtn">💰 將分紅放入口袋 (Claim)</button>
     </div>
 
+    <div class="card hidden" id="history-card">
+        <div style="text-align: left; font-weight: bold; margin-bottom: 10px; color: var(--xmas-gold);" data-i18n="labelHistory">📜 歷屆榮譽榜 (Past Winners)</div>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th data-i18n="thRound">回合</th>
+                    <th data-i18n="thWinner">贏家</th>
+                    <th data-i18n="thResult">結果</th>
+                </tr>
+            </thead>
+            <tbody id="history-list">
+                <tr><td colspan="3" style="text-align:center; color:#888;">Loading history...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="card hidden protocol-active" id="christmas-card">
         <h2 style="color: var(--xmas-gold); margin-top: 0; font-family: 'Mountains of Christmas', cursive;" data-i18n="xmasTitle">🎄 聖誕快樂！驚喜時刻！</h2>
         <p style="font-size: 1.1em;" data-i18n="xmasDesc">聖誕老人強制打開了禮物盒！所有參與者人人有獎！</p>
@@ -350,12 +253,17 @@
             claimXmasBtn: "🎁 立即拆開紅包 (Open Gift)",
             labelProtocol: "🎄 聖誕協議強制結算倒數",
             labelProtocolDesc: "如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！",
-            // Footer
+            labelHistory: "📜 歷屆榮譽榜 (History)",
+            thRound: "回合",
+            thWinner: "贏家",
+            thResult: "結果",
+            tagWinner: "大獎得主",
+            tagProtocol: "聖誕協議",
+            noHistory: "暫無紀錄",
             labelContract: "合約地址:",
             linkContract: "在 CronosScan 上查看",
             labelWhitepaper: "項目白皮書:",
             linkWhitepaper: "閱讀完整文件",
-            // JS Alerts
             alertNoWallet: "Ho Ho Ho! 聖誕老人找不到您的錢包，請安裝 MetaMask！",
             alertWrongChain: "請切換到 Cronos 主網來參與聖誕活動喔！",
             timerCalculating: "00:00:00 (聖誕老人結算中...)",
@@ -401,12 +309,17 @@
             claimXmasBtn: "🎁 Open Gift Now",
             labelProtocol: "🎄 Christmas Protocol Countdown",
             labelProtocolDesc: "If game not ended, Santa forces distribution on Dec 26, 12:00 UTC!",
-            // Footer
+            labelHistory: "📜 Past Winners (History)",
+            thRound: "Round",
+            thWinner: "Winner",
+            thResult: "Result",
+            tagWinner: "Jackpot",
+            tagProtocol: "Protocol",
+            noHistory: "No history yet",
             labelContract: "Verified Contract:",
             linkContract: "View on CronosScan",
             labelWhitepaper: "Whitepaper:",
             linkWhitepaper: "Read Docs",
-            // JS Alerts
             alertNoWallet: "Ho Ho Ho! Santa can't find your wallet. Please install MetaMask!",
             alertWrongChain: "Please switch to Cronos Mainnet to join the Christmas event!",
             timerCalculating: "00:00:00 (Santa is calculating...)",
@@ -452,12 +365,17 @@
             claimXmasBtn: "🎁 今すぐお年玉を開ける",
             labelProtocol: "🎄 クリスマス・プロトコル・カウントダウン",
             labelProtocolDesc: "ゲームが続いている場合、12/26 12:00 UTCにサンタが強制配当を行います！",
-            // Footer
+            labelHistory: "📜 過去の勝者 (History)",
+            thRound: "ラウンド",
+            thWinner: "勝者",
+            thResult: "結果",
+            tagWinner: "大当たり",
+            tagProtocol: "プロトコル",
+            noHistory: "記録なし",
             labelContract: "確認済みコントラクト:",
             linkContract: "CronosScanで見る",
             labelWhitepaper: "ホワイトペーパー:",
             linkWhitepaper: "ドキュメントを読む",
-            // JS Alerts
             alertNoWallet: "ホゥホゥホゥ！サンタがあなたのウォレットを見つけられません。MetaMaskをインストールしてください！",
             alertWrongChain: "クリスマスイベントに参加するにはCronosメインネットに切り替えてください！",
             timerCalculating: "00:00:00 (サンタが集計中...)",
@@ -503,12 +421,17 @@
             claimXmasBtn: "🎁 지금 세뱃돈 열기",
             labelProtocol: "🎄 크리스마스 프로토콜 카운트다운",
             labelProtocolDesc: "게임이 계속되면 12/26 12:00 UTC에 산타가 강제 배당을 진행합니다!",
-            // Footer
+            labelHistory: "📜 지난 우승자 (History)",
+            thRound: "라운드",
+            thWinner: "우승자",
+            thResult: "결과",
+            tagWinner: "잭팟",
+            tagProtocol: "프로토콜",
+            noHistory: "기록 없음",
             labelContract: "확인된 계약:",
             linkContract: "CronosScan에서 보기",
             labelWhitepaper: "백서:",
             linkWhitepaper: "문서 읽기",
-            // JS Alerts
             alertNoWallet: "호호호! 산타가 지갑을 찾을 수 없습니다. MetaMask를 설치해주세요!",
             alertWrongChain: "크리스마스 이벤트에 참여하려면 Cronos 메인넷으로 전환해주세요!",
             timerCalculating: "00:00:00 (산타가 집계 중...)",
@@ -550,6 +473,11 @@
         if (withdrawBtn.disabled && withdrawBtn.innerText.includes('...')) {
              withdrawBtn.innerText = translations[lang].btnWithdrawing;
         }
+        // Update history if already loaded
+        const historyRows = document.querySelectorAll('#history-list tr');
+        if(historyRows.length > 0 && !historyRows[0].innerText.includes('Loading')) {
+             updateHistory(currentRoundId); // refresh labels
+        }
     }
 
     // Auto-detect browser language
@@ -562,12 +490,6 @@
     // --- Contract Configuration ---
     const CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
     const EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
-    
-    // Hardcoded Christmas Timestamp from Contract (2025-12-26 12:00 UTC)
-    // Note: If deploying for 2024 or 2025, ensure this matches contract.
-    // Based on previous step, it was 1766750400 (2025). 
-    // If you need it for 2024, it should be 1735214400.
-    // Assuming we use the contract value:
     const CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
     const ABI = [
@@ -591,13 +513,12 @@
 
     document.getElementById('contract-link').href = EXPLORER_URL;
 
-    // Start the Protocol Countdown immediately
     startProtocolCountdown();
     
-    // Check if ethers is loaded immediately
+    // Safety check
     window.onload = function() {
          if (typeof ethers === 'undefined') {
-             alert("⚠️ 錯誤：核心檔案加載失敗 (Ethers Library Missing)！\n請嘗試：\n1. 重新整理網頁\n2. 關閉 AdBlock 或 VPN\n3. 使用其他瀏覽器");
+             alert("⚠️ 錯誤：核心檔案加載失敗！\n請嘗試：\n1. 重新整理網頁\n2. 關閉 AdBlock\n3. 使用 Chrome/Edge 瀏覽器");
          }
     };
 
@@ -605,10 +526,7 @@
         if (!window.ethereum) { alert(translations[currentLang].alertNoWallet); return; }
         
         try {
-            // Check if ethers is loaded
-            if (typeof ethers === 'undefined') {
-                throw new Error("Ethers.js library not loaded. Please refresh or check your internet.");
-            }
+            if (typeof ethers === 'undefined') throw new Error("Ethers.js library not loaded.");
 
             provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
@@ -620,6 +538,7 @@
             document.getElementById('wallet-info').classList.remove('hidden');
             document.getElementById('wallet-address').innerText = userAddress.slice(0,6) + "..." + userAddress.slice(-4);
             document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('history-card').classList.remove('hidden'); // Show History Card
 
             const { chainId } = await provider.getNetwork();
             if (chainId !== 25) {
@@ -633,7 +552,6 @@
 
         } catch (error) {
             console.error(error);
-            // 讓錯誤訊息直接顯示出來，我們才知道錯在哪
             alert("連接失敗 (Connection Error):\n" + (error.reason || error.message || error));
         }
     }
@@ -641,7 +559,9 @@
     async function refreshData() {
         if (!contract) return;
         try {
-            currentRoundId = await contract.roundId();
+            const rId = await contract.roundId();
+            currentRoundId = rId.toNumber();
+            
             const pot = await contract.grandPot();
             const roundData = await contract.rounds(currentRoundId);
             const christmasEnded = roundData[2];
@@ -676,7 +596,55 @@
                 document.getElementById('my-dividends').innerText = parseFloat(ethers.utils.formatEther(pendingDivs)).toFixed(4);
                 document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
             }
+
+            // Update History Logic
+            updateHistory(currentRoundId);
+
         } catch (err) { console.error("Error fetching data:", err); }
+    }
+
+    // --- History Logic ---
+    async function updateHistory(currentId) {
+        if (currentId <= 1) {
+            document.getElementById('history-list').innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        // Loop through past rounds (e.g., from 1 to currentId-1)
+        // Since we probably only have a few rounds, looping is fine.
+        // Reverse loop to show latest first
+        for (let i = currentId - 1; i >= 1; i--) {
+            try {
+                const rData = await contract.rounds(i);
+                // rData: [isActive, ended, christmasEnded, endTimestamp, totalWishes, winner, ...]
+                const ended = rData[1];
+                const xmasEnded = rData[2];
+                const winner = rData[5];
+
+                let winnerDisplay = "---";
+                let resultTag = "";
+
+                if (xmasEnded) {
+                    winnerDisplay = "🎅 Santa (All)";
+                    resultTag = `<span class="protocol-tag">${translations[currentLang].tagProtocol}</span>`;
+                } else if (ended) {
+                    winnerDisplay = winner.slice(0, 6) + "..." + winner.slice(-4);
+                    resultTag = `<span class="winner-tag">${translations[currentLang].tagWinner}</span>`;
+                }
+
+                html += `
+                    <tr>
+                        <td>#${i}</td>
+                        <td style="font-family:monospace; color:#fff;">${winnerDisplay}</td>
+                        <td>${resultTag}</td>
+                    </tr>
+                `;
+            } catch (e) {
+                console.error("Error fetching history for round " + i, e);
+            }
+        }
+        document.getElementById('history-list').innerHTML = html;
     }
 
     function startCountdown(endTime) {
@@ -698,7 +666,6 @@
         }, 1000);
     }
 
-    // Christmas Protocol Countdown
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
         protocolInterval = setInterval(() => {
@@ -713,7 +680,6 @@
                 const h = Math.floor((diff % 86400) / 3600);
                 const m = Math.floor((diff % 3600) / 60);
                 const s = diff % 60;
-                // Format: 10d 05h 30m 15s
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
@@ -722,7 +688,6 @@
     async function makeWish() {
         if (!contract) return;
         const btn = document.getElementById('wish-btn');
-        const originalText = btn.innerText;
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnWishing;
@@ -780,4 +745,5 @@
 </script>
 </body>
 </html>
+
 
