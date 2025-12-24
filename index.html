@@ -19,7 +19,7 @@
         }
 
         body {
-            font-family: 'Roboto', 'Noto Sans JP', 'Noto Sans KR', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: var(--bg-dark);
             background-image: url('https://www.transparenttextures.com/patterns/snow.png'), linear-gradient(to bottom, #0f1a2a, #3a1c1c);
             color: var(--snow-white);
@@ -52,7 +52,7 @@
         .pot-display { font-family: 'Mountains of Christmas', cursive; font-size: 3em; font-weight: bold; color: var(--xmas-gold); text-shadow: 0 0 15px rgba(248, 178, 41, 0.6); margin: 15px 0; }
         .timer-display { font-size: 1.8em; font-weight: bold; font-family: monospace; background: rgba(195, 15, 22, 0.6); padding: 5px 15px; border-radius: 10px; display: inline-block; margin: 10px 0; }
 
-        .btn { background: linear-gradient(to bottom, var(--xmas-red), #8a0b0f); color: var(--snow-white); border: 2px solid var(--xmas-gold); padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 15px; cursor: pointer; width: 100%; transition: all 0.2s; box-shadow: 0 4px 0 #5c070a, 0 5px 10px rgba(0,0,0,0.4); text-shadow: 1px 1px 2px rgba(0,0,0,0.5); font-family: 'Mountains of Christmas', 'Noto Sans JP', 'Noto Sans KR', cursive; }
+        .btn { background: linear-gradient(to bottom, var(--xmas-red), #8a0b0f); color: var(--snow-white); border: 2px solid var(--xmas-gold); padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 15px; cursor: pointer; width: 100%; transition: all 0.2s; box-shadow: 0 4px 0 #5c070a, 0 5px 10px rgba(0,0,0,0.4); text-shadow: 1px 1px 2px rgba(0,0,0,0.5); font-family: 'Mountains of Christmas', cursive; }
         .btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 0 #5c070a, 0 7px 12px rgba(0,0,0,0.5); }
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #5c070a, 0 3px 5px rgba(0,0,0,0.5); }
         .btn:disabled { background: #555; border-color: #333; cursor: not-allowed; box-shadow: none; transform: none; }
@@ -60,13 +60,18 @@
         .btn-outline { background: rgba(248, 178, 41, 0.2); border: 2px solid var(--xmas-gold); color: var(--xmas-gold); margin-top: 15px; }
         .btn-outline:hover { background: rgba(248, 178, 41, 0.4); }
 
+        .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; }
+
         /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
         .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); }
         .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .history-table tr:last-child td { border-bottom: none; }
         .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
         .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
+
+        /* 補領專區樣式 */
+        .legacy-box { background: rgba(0,0,0,0.4); border: 1px dashed var(--xmas-gold); padding: 10px; margin-top: 15px; border-radius: 8px; text-align: left; }
+        .legacy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding: 5px 0; border-bottom: 1px solid #333; }
 
         .rules-container details { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; border: 2px dashed var(--xmas-gold); }
         .rules-container summary { font-weight: bold; cursor: pointer; color: var(--xmas-gold); font-size: 1.1em; outline: none; }
@@ -82,7 +87,6 @@
         #wallet-address { font-family: monospace; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; font-size: 0.9em; display: inline-block; margin-bottom: 20px; border: 1px solid var(--xmas-gold); }
         .hidden { display: none; }
         .protocol-active { border: 4px solid var(--xmas-gold); animation: glow 2s infinite alternate; background: linear-gradient(to bottom, #c30f16, #8a0b0f); }
-        @keyframes glow { from { box-shadow: 0 0 10px var(--xmas-gold); } to { box-shadow: 0 0 30px var(--xmas-gold), 0 0 10px var(--xmas-red); } }
         
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
@@ -167,7 +171,7 @@
     <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 平分獎金！</div>
+        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -183,10 +187,12 @@
             </div>
         </div>
         <button class="btn btn-outline" onclick="withdraw()" id="withdraw-btn" data-i18n="withdrawBtn">💰 將分紅放入口袋 (Claim)</button>
+
+        <div id="legacy-claims" class="hidden"></div>
     </div>
 
     <div class="card hidden" id="history-card">
-        <div style="text-align: left; font-weight: bold; margin-bottom: 10px; color: var(--xmas-gold);" data-i18n="labelHistory">📜 歷屆榮譽榜 (Past Winners)</div>
+        <div style="text-align: left; font-weight: bold; margin-bottom: 10px; color: var(--xmas-gold);" data-i18n="labelHistory">📜 歷屆榮譽榜 (History)</div>
         <table class="history-table">
             <thead>
                 <tr>
@@ -280,7 +286,9 @@
             alertClaimXmasSuccess: "🎄 聖誕快樂！大紅包已經送達！",
             htmlClaimXmasDone: "<h2 style='color:var(--xmas-gold)'>✅ 禮物已成功領取！聖誕快樂！</h2>",
             alertClaimXmasFail: "領取失敗，是不是已經領過了呢？",
-            protocolReady: "🎉 聖誕協議準備就緒！"
+            protocolReady: "🎉 聖誕協議準備就緒！",
+            labelLegacy: "🏴‍☠️ 遺忘的寶藏 (Unclaimed)",
+            btnClaimOld: "補領"
         },
         en: {
             pageTitle: "Santa's Infinite Gift Box",
@@ -337,7 +345,9 @@
             alertClaimXmasSuccess: "🎄 Merry Christmas! Big Red Envelope delivered!",
             htmlClaimXmasDone: "<h2 style='color:var(--xmas-gold)'>✅ Gift Claimed! Merry Christmas!</h2>",
             alertClaimXmasFail: "Claim failed. Have you already opened it?",
-            protocolReady: "🎉 Protocol Ready!"
+            protocolReady: "🎉 Protocol Ready!",
+            labelLegacy: "🏴‍☠️ Unclaimed History",
+            btnClaimOld: "Claim"
         },
         ja: {
             pageTitle: "サンタの無限ギフトボックス",
@@ -394,7 +404,9 @@
             alertClaimXmasSuccess: "🎄 メリークリスマス！大きなお年玉が届きました！",
             htmlClaimXmasDone: "<h2 style='color:var(--xmas-gold)'>✅ プレゼントを受け取りました！メリークリスマス！</h2>",
             alertClaimXmasFail: "受け取りに失敗しました。既に開けていませんか？",
-            protocolReady: "🎉 プロトコル準備完了！"
+            protocolReady: "🎉 プロトコル準備完了！",
+            labelLegacy: "🏴‍☠️ 未請求の配当 (Unclaimed)",
+            btnClaimOld: "請求"
         },
         ko: {
             pageTitle: "산타의 무한 선물 상자",
@@ -451,7 +463,9 @@
             alertClaimXmasSuccess: "🎄 메리 크리스마스! 큰 세뱃돈이 도착했습니다!",
             htmlClaimXmasDone: "<h2 style='color:var(--xmas-gold)'>✅ 선물 수령 완료! 메리 크리스마스!</h2>",
             alertClaimXmasFail: "수령 실패. 이미 열어보지 않으셨나요?",
-            protocolReady: "🎉 프로토콜 준비 완료!"
+            protocolReady: "🎉 프로토콜 준비 완료!",
+            labelLegacy: "🏴‍☠️ 미청구 배당금 (Unclaimed)",
+            btnClaimOld: "청구"
         }
     };
 
@@ -478,11 +492,13 @@
         if (withdrawBtn.disabled && withdrawBtn.innerText.includes('...')) {
              withdrawBtn.innerText = translations[lang].btnWithdrawing;
         }
-        // Update history if already loaded
+        
+        // Refresh Lists (History / Legacy) if visible
         const historyRows = document.querySelectorAll('#history-list tr');
         if(historyRows.length > 0 && !historyRows[0].innerText.includes('Loading')) {
-             updateHistory(currentRoundId); // refresh labels
+             updateHistory(currentRoundId);
         }
+        if (userAddress) checkLegacyDividends(userAddress);
     }
 
     // Auto-detect browser language
@@ -497,7 +513,7 @@
     const EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
     const CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
-    // **Updated ABI to include Events**
+    // **Updated ABI**
     const ABI = [
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
@@ -605,37 +621,75 @@
                 document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
             }
 
-            // Update History Logic
-            updateHistory(currentRoundId);
+            // Calls independent of standard refresh to avoid blocking
+            if (userAddress) {
+                updateHistory(currentRoundId);
+                checkLegacyDividends(userAddress);
+            }
 
         } catch (err) { console.error("Error fetching data:", err); }
     }
 
-    // --- History Logic with Events ---
+    // --- Legacy Dividends Logic (Scan old rounds) ---
+    async function checkLegacyDividends(user) {
+        if (currentRoundId <= 1) return;
+        
+        let html = ``;
+        let hasClaims = false;
+
+        // Loop previous rounds
+        for (let i = 1; i < currentRoundId; i++) {
+            try {
+                const pending = await contract.getPendingDividends(i, user);
+                if (pending.gt(0)) {
+                    hasClaims = true;
+                    html += `
+                        <div class="legacy-row">
+                            <span>Round #${i}: <span style="color:var(--xmas-green)">${parseFloat(ethers.utils.formatEther(pending)).toFixed(2)} CRO</span></span>
+                            <button class="btn btn-sm" onclick="withdrawOld(${i})">${translations[currentLang].btnClaimOld}</button>
+                        </div>
+                    `;
+                }
+            } catch (e) {}
+        }
+
+        const container = document.getElementById('legacy-claims');
+        if (hasClaims) {
+            container.innerHTML = `<div class="legacy-box"><div style="font-weight:bold;margin-bottom:5px;">${translations[currentLang].labelLegacy}</div>${html}</div>`;
+            container.classList.remove('hidden');
+        } else {
+            container.classList.add('hidden');
+        }
+    }
+
+    async function withdrawOld(rId) {
+        if (!contract) return;
+        try {
+            const tx = await contract.withdrawDividends(rId, { gasLimit: 200000 });
+            await tx.wait();
+            alert("💰 Success! Old dividends claimed.");
+            refreshData();
+        } catch (err) { alert("Error claiming old dividends."); }
+    }
+
+    // --- History Logic (Safe Mode) ---
     async function updateHistory(currentId) {
         if (currentId <= 1) {
             document.getElementById('history-list').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
             return;
         }
 
-        try {
-            // Fetch events to get prize info (simple approach: query from block 0)
-            // Note: On Cronos public RPC, this might be limited. If errors occur, we might need to limit the block range.
-            // Since contract is new, it should be fine.
-            const endedEvents = await contract.queryFilter(contract.filters.RoundEnded());
-            const xmasEvents = await contract.queryFilter(contract.filters.ChristmasProtocolTriggered());
+        // 1. Render Basic Info First (Fast)
+        let html = '';
+        for (let i = currentId - 1; i >= 1; i--) {
+            // Placeholder ID for price update later
+            html += `<tr id="row-${i}"><td>#${i}</td><td>Loading...</td><td>-</td><td>-</td></tr>`;
+        }
+        document.getElementById('history-list').innerHTML = html;
 
-            // Create lookup map
-            let prizeMap = {};
-            endedEvents.forEach(e => {
-                prizeMap[e.args.roundId.toString()] = ethers.utils.formatEther(e.args.potWon);
-            });
-            xmasEvents.forEach(e => {
-                prizeMap[e.args.roundId.toString()] = ethers.utils.formatEther(e.args.totalDistribute);
-            });
-
-            let html = '';
-            for (let i = currentId - 1; i >= 1; i--) {
+        // 2. Fetch and Update Details Row by Row
+        for (let i = currentId - 1; i >= 1; i--) {
+            try {
                 const rData = await contract.rounds(i);
                 const ended = rData[1];
                 const xmasEnded = rData[2];
@@ -643,7 +697,7 @@
 
                 let winnerDisplay = "---";
                 let resultTag = "";
-                let prizeDisplay = prizeMap[i.toString()] ? (parseFloat(prizeMap[i.toString()]).toFixed(2) + " CRO") : "? CRO";
+                let prizeDisplay = "---"; 
 
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
@@ -653,19 +707,35 @@
                     resultTag = `<span class="winner-tag">${translations[currentLang].tagWinner}</span>`;
                 }
 
-                html += `
-                    <tr>
+                // Update Row DOM
+                const row = document.getElementById(`row-${i}`);
+                if(row) {
+                    row.innerHTML = `
                         <td>#${i}</td>
                         <td style="font-family:monospace; color:#fff;">${winnerDisplay}</td>
-                        <td style="color:var(--xmas-gold); font-weight:bold;">${prizeDisplay}</td>
+                        <td style="color:var(--xmas-gold); font-weight:bold;" id="prize-${i}">? CRO</td>
                         <td>${resultTag}</td>
-                    </tr>
-                `;
-            }
-            document.getElementById('history-list').innerHTML = html;
+                    `;
+                }
+            } catch (e) {}
+        }
 
+        // 3. Try Fetching Events for Prizes (Non-blocking)
+        try {
+            // Attempt to fetch logs. If RPC fails, we just don't update the prize column.
+            const endedEvents = await contract.queryFilter(contract.filters.RoundEnded());
+            const xmasEvents = await contract.queryFilter(contract.filters.ChristmasProtocolTriggered());
+
+            endedEvents.forEach(e => {
+                const el = document.getElementById(`prize-${e.args.roundId}`);
+                if(el) el.innerText = parseFloat(ethers.utils.formatEther(e.args.potWon)).toFixed(2) + " CRO";
+            });
+            xmasEvents.forEach(e => {
+                const el = document.getElementById(`prize-${e.args.roundId}`);
+                if(el) el.innerText = parseFloat(ethers.utils.formatEther(e.args.totalDistribute)).toFixed(2) + " CRO";
+            });
         } catch (e) {
-            console.error("Error fetching history events:", e);
+            console.warn("Could not fetch logs for prize details (RPC Limit). Basic history is still shown.");
         }
     }
 
