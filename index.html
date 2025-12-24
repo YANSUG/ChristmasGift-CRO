@@ -60,7 +60,7 @@
         .btn-outline { background: rgba(248, 178, 41, 0.2); border: 2px solid var(--xmas-gold); color: var(--xmas-gold); margin-top: 15px; }
         .btn-outline:hover { background: rgba(248, 178, 41, 0.4); }
 
-        .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; }
+        .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; }
 
         /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
@@ -71,7 +71,7 @@
 
         /* 補領專區樣式 */
         .legacy-box { background: rgba(0,0,0,0.4); border: 1px dashed var(--xmas-gold); padding: 10px; margin-top: 15px; border-radius: 8px; text-align: left; }
-        .legacy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding: 5px 0; border-bottom: 1px solid #333; }
+        .legacy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding: 5px 0; border-bottom: 1px solid #333; font-size: 0.9em; }
 
         .rules-container details { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; border: 2px dashed var(--xmas-gold); }
         .rules-container summary { font-weight: bold; cursor: pointer; color: var(--xmas-gold); font-size: 1.1em; outline: none; }
@@ -513,7 +513,6 @@
     const EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
     const CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
-    // **Updated ABI**
     const ABI = [
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
@@ -529,7 +528,8 @@
         "event ChristmasProtocolTriggered(uint256 indexed roundId, uint256 totalDistribute, uint256 perShare)"
     ];
 
-    let provider, signer, contract;
+    // 🔴 變數改名，避免衝突
+    let gameProvider, gameSigner, gameContract;
     let userAddress = null;
     let currentRoundId = 1;
     let countdownInterval;
@@ -552,11 +552,12 @@
         try {
             if (typeof ethers === 'undefined') throw new Error("Ethers.js library not loaded.");
 
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            signer = provider.getSigner();
-            userAddress = await signer.getAddress();
-            contract = new ethers.Contract(CONTRACT_ADDR, ABI, signer);
+            // 🔴 使用 gameProvider
+            gameProvider = new ethers.providers.Web3Provider(window.ethereum);
+            await gameProvider.send("eth_requestAccounts", []);
+            gameSigner = gameProvider.getSigner();
+            userAddress = await gameSigner.getAddress();
+            gameContract = new ethers.Contract(CONTRACT_ADDR, ABI, gameSigner);
 
             document.getElementById('connect-btn').classList.add('hidden');
             document.getElementById('wallet-info').classList.remove('hidden');
@@ -564,7 +565,7 @@
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('history-card').classList.remove('hidden');
 
-            const { chainId } = await provider.getNetwork();
+            const { chainId } = await gameProvider.getNetwork();
             if (chainId !== 25) {
                 try {
                     await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x19' }] });
@@ -581,13 +582,13 @@
     }
 
     async function refreshData() {
-        if (!contract) return;
+        if (!gameContract) return;
         try {
-            const rId = await contract.roundId();
+            const rId = await gameContract.roundId();
             currentRoundId = rId.toNumber();
             
-            const pot = await contract.grandPot();
-            const roundData = await contract.rounds(currentRoundId);
+            const pot = await gameContract.grandPot();
+            const roundData = await gameContract.rounds(currentRoundId);
             const christmasEnded = roundData[2];
             const endTimestamp = roundData[3].toNumber();
             const totalWishes = roundData[4].toNumber();
@@ -609,14 +610,14 @@
                 document.getElementById('dashboard').style.display = 'none';
                 document.getElementById('christmas-card').classList.remove('hidden');
                 if (userAddress) {
-                    const gift = await contract.getPendingChristmasGift(currentRoundId, userAddress);
+                    const gift = await gameContract.getPendingChristmasGift(currentRoundId, userAddress);
                     document.getElementById('christmas-gift-amount').innerText = ethers.utils.formatEther(gift) + " CRO";
                 }
             }
 
             if (userAddress && !christmasEnded) {
-                const pendingDivs = await contract.getPendingDividends(currentRoundId, userAddress);
-                const wisherInfo = await contract.wishers(currentRoundId, userAddress);
+                const pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
+                const wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
                 document.getElementById('my-dividends').innerText = parseFloat(ethers.utils.formatEther(pendingDivs)).toFixed(4);
                 document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
             }
@@ -637,10 +638,9 @@
         let html = ``;
         let hasClaims = false;
 
-        // Loop previous rounds
         for (let i = 1; i < currentRoundId; i++) {
             try {
-                const pending = await contract.getPendingDividends(i, user);
+                const pending = await gameContract.getPendingDividends(i, user);
                 if (pending.gt(0)) {
                     hasClaims = true;
                     html += `
@@ -663,9 +663,9 @@
     }
 
     async function withdrawOld(rId) {
-        if (!contract) return;
+        if (!gameContract) return;
         try {
-            const tx = await contract.withdrawDividends(rId, { gasLimit: 200000 });
+            const tx = await gameContract.withdrawDividends(rId, { gasLimit: 200000 });
             await tx.wait();
             alert("💰 Success! Old dividends claimed.");
             refreshData();
@@ -682,7 +682,6 @@
         // 1. Render Basic Info First (Fast)
         let html = '';
         for (let i = currentId - 1; i >= 1; i--) {
-            // Placeholder ID for price update later
             html += `<tr id="row-${i}"><td>#${i}</td><td>Loading...</td><td>-</td><td>-</td></tr>`;
         }
         document.getElementById('history-list').innerHTML = html;
@@ -690,14 +689,13 @@
         // 2. Fetch and Update Details Row by Row
         for (let i = currentId - 1; i >= 1; i--) {
             try {
-                const rData = await contract.rounds(i);
+                const rData = await gameContract.rounds(i);
                 const ended = rData[1];
                 const xmasEnded = rData[2];
                 const winner = rData[5];
 
                 let winnerDisplay = "---";
                 let resultTag = "";
-                let prizeDisplay = "---"; 
 
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
@@ -707,7 +705,6 @@
                     resultTag = `<span class="winner-tag">${translations[currentLang].tagWinner}</span>`;
                 }
 
-                // Update Row DOM
                 const row = document.getElementById(`row-${i}`);
                 if(row) {
                     row.innerHTML = `
@@ -720,11 +717,10 @@
             } catch (e) {}
         }
 
-        // 3. Try Fetching Events for Prizes (Non-blocking)
+        // 3. Try Fetching Events for Prizes
         try {
-            // Attempt to fetch logs. If RPC fails, we just don't update the prize column.
-            const endedEvents = await contract.queryFilter(contract.filters.RoundEnded());
-            const xmasEvents = await contract.queryFilter(contract.filters.ChristmasProtocolTriggered());
+            const endedEvents = await gameContract.queryFilter(gameContract.filters.RoundEnded());
+            const xmasEvents = await gameContract.queryFilter(gameContract.filters.ChristmasProtocolTriggered());
 
             endedEvents.forEach(e => {
                 const el = document.getElementById(`prize-${e.args.roundId}`);
@@ -772,19 +768,18 @@
                 const h = Math.floor((diff % 86400) / 3600);
                 const m = Math.floor((diff % 3600) / 60);
                 const s = diff % 60;
-                // Format: 10d 05h 30m 15s
-                timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
+                timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             }
         }, 1000);
     }
 
     async function makeWish() {
-        if (!contract) return;
+        if (!gameContract) return;
         const btn = document.getElementById('wish-btn');
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnWishing;
-            const tx = await contract.wish({ value: ethers.utils.parseEther("20"), gasLimit: 300000 });
+            const tx = await gameContract.wish({ value: ethers.utils.parseEther("20"), gasLimit: 300000 });
             await tx.wait();
             alert(translations[currentLang].alertWishSuccess);
             refreshData();
@@ -800,12 +795,12 @@
     }
 
     async function withdraw() {
-        if (!contract) return;
+        if (!gameContract) return;
         const btn = document.getElementById('withdraw-btn');
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnWithdrawing;
-            const tx = await contract.withdrawDividends(currentRoundId, { gasLimit: 200000 });
+            const tx = await gameContract.withdrawDividends(currentRoundId, { gasLimit: 200000 });
             await tx.wait();
             alert(translations[currentLang].alertWithdrawSuccess);
             refreshData();
@@ -819,12 +814,12 @@
     }
 
     async function claimChristmas() {
-        if (!contract) return;
+        if (!gameContract) return;
         const btn = event.target;
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnClaimingXmas;
-            const tx = await contract.claimChristmasGift(currentRoundId);
+            const tx = await gameContract.claimChristmasGift(currentRoundId);
             await tx.wait();
             alert(translations[currentLang].alertClaimXmasSuccess);
             document.getElementById('christmas-card').innerHTML = translations[currentLang].htmlClaimXmasDone;
