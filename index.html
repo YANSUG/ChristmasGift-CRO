@@ -192,11 +192,12 @@
                 <tr>
                     <th data-i18n="thRound">回合</th>
                     <th data-i18n="thWinner">贏家</th>
+                    <th data-i18n="thPrize">獎金</th>
                     <th data-i18n="thResult">結果</th>
                 </tr>
             </thead>
             <tbody id="history-list">
-                <tr><td colspan="3" style="text-align:center; color:#888;">Loading history...</td></tr>
+                <tr><td colspan="4" style="text-align:center; color:#888;">Loading history...</td></tr>
             </tbody>
         </table>
     </div>
@@ -256,6 +257,7 @@
             labelHistory: "📜 歷屆榮譽榜 (History)",
             thRound: "回合",
             thWinner: "贏家",
+            thPrize: "獎金",
             thResult: "結果",
             tagWinner: "大獎得主",
             tagProtocol: "聖誕協議",
@@ -312,6 +314,7 @@
             labelHistory: "📜 Past Winners (History)",
             thRound: "Round",
             thWinner: "Winner",
+            thPrize: "Prize",
             thResult: "Result",
             tagWinner: "Jackpot",
             tagProtocol: "Protocol",
@@ -368,6 +371,7 @@
             labelHistory: "📜 過去の勝者 (History)",
             thRound: "ラウンド",
             thWinner: "勝者",
+            thPrize: "賞金",
             thResult: "結果",
             tagWinner: "大当たり",
             tagProtocol: "プロトコル",
@@ -424,6 +428,7 @@
             labelHistory: "📜 지난 우승자 (History)",
             thRound: "라운드",
             thWinner: "우승자",
+            thPrize: "상금",
             thResult: "결과",
             tagWinner: "잭팟",
             tagProtocol: "프로토콜",
@@ -492,6 +497,7 @@
     const EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
     const CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
+    // **Updated ABI to include Events**
     const ABI = [
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
@@ -502,7 +508,9 @@
         "function wishers(uint256, address) view returns (uint256, uint256, uint256, uint256, bool)",
         "function getPendingDividends(uint256, address) view returns (uint256)",
         "function getPendingChristmasGift(uint256, address) view returns (uint256)",
-        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)"
+        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)",
+        "event RoundEnded(uint256 indexed roundId, address winner, uint256 potWon)",
+        "event ChristmasProtocolTriggered(uint256 indexed roundId, uint256 totalDistribute, uint256 perShare)"
     ];
 
     let provider, signer, contract;
@@ -538,7 +546,7 @@
             document.getElementById('wallet-info').classList.remove('hidden');
             document.getElementById('wallet-address').innerText = userAddress.slice(0,6) + "..." + userAddress.slice(-4);
             document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('history-card').classList.remove('hidden'); // Show History Card
+            document.getElementById('history-card').classList.remove('hidden');
 
             const { chainId } = await provider.getNetwork();
             if (chainId !== 25) {
@@ -603,27 +611,39 @@
         } catch (err) { console.error("Error fetching data:", err); }
     }
 
-    // --- History Logic ---
+    // --- History Logic with Events ---
     async function updateHistory(currentId) {
         if (currentId <= 1) {
-            document.getElementById('history-list').innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
+            document.getElementById('history-list').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
             return;
         }
 
-        let html = '';
-        // Loop through past rounds (e.g., from 1 to currentId-1)
-        // Since we probably only have a few rounds, looping is fine.
-        // Reverse loop to show latest first
-        for (let i = currentId - 1; i >= 1; i--) {
-            try {
+        try {
+            // Fetch events to get prize info (simple approach: query from block 0)
+            // Note: On Cronos public RPC, this might be limited. If errors occur, we might need to limit the block range.
+            // Since contract is new, it should be fine.
+            const endedEvents = await contract.queryFilter(contract.filters.RoundEnded());
+            const xmasEvents = await contract.queryFilter(contract.filters.ChristmasProtocolTriggered());
+
+            // Create lookup map
+            let prizeMap = {};
+            endedEvents.forEach(e => {
+                prizeMap[e.args.roundId.toString()] = ethers.utils.formatEther(e.args.potWon);
+            });
+            xmasEvents.forEach(e => {
+                prizeMap[e.args.roundId.toString()] = ethers.utils.formatEther(e.args.totalDistribute);
+            });
+
+            let html = '';
+            for (let i = currentId - 1; i >= 1; i--) {
                 const rData = await contract.rounds(i);
-                // rData: [isActive, ended, christmasEnded, endTimestamp, totalWishes, winner, ...]
                 const ended = rData[1];
                 const xmasEnded = rData[2];
                 const winner = rData[5];
 
                 let winnerDisplay = "---";
                 let resultTag = "";
+                let prizeDisplay = prizeMap[i.toString()] ? (parseFloat(prizeMap[i.toString()]).toFixed(2) + " CRO") : "? CRO";
 
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
@@ -637,14 +657,16 @@
                     <tr>
                         <td>#${i}</td>
                         <td style="font-family:monospace; color:#fff;">${winnerDisplay}</td>
+                        <td style="color:var(--xmas-gold); font-weight:bold;">${prizeDisplay}</td>
                         <td>${resultTag}</td>
                     </tr>
                 `;
-            } catch (e) {
-                console.error("Error fetching history for round " + i, e);
             }
+            document.getElementById('history-list').innerHTML = html;
+
+        } catch (e) {
+            console.error("Error fetching history events:", e);
         }
-        document.getElementById('history-list').innerHTML = html;
     }
 
     function startCountdown(endTime) {
@@ -680,6 +702,7 @@
                 const h = Math.floor((diff % 86400) / 3600);
                 const m = Math.floor((diff % 3600) / 60);
                 const s = diff % 60;
+                // Format: 10d 05h 30m 15s
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
@@ -745,5 +768,3 @@
 </script>
 </body>
 </html>
-
-
