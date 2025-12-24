@@ -64,10 +64,10 @@
 
         /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); }
-        .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
-        .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
+        .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); font-size: 0.85em; }
+        .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); vertical-align: middle; }
+        .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
+        .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; white-space: nowrap; }
 
         /* 補領專區樣式 */
         .legacy-box { background: rgba(0,0,0,0.4); border: 1px dashed var(--xmas-gold); padding: 10px; margin-top: 15px; border-radius: 8px; text-align: left; }
@@ -171,7 +171,7 @@
     <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 平分獎金！</div>
+        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -198,8 +198,8 @@
                 <tr>
                     <th data-i18n="thRound">回合</th>
                     <th data-i18n="thWinner">贏家</th>
-                    <th data-i18n="thPrize">獎金</th>
-                    <th data-i18n="thResult">結果</th>
+                    <th data-i18n="thWishes">願望數</th>
+                    <th data-i18n="thPrize">總獎金</th>
                 </tr>
             </thead>
             <tbody id="history-list">
@@ -263,9 +263,9 @@
             labelHistory: "📜 歷屆榮譽榜 (History)",
             thRound: "回合",
             thWinner: "贏家",
-            thPrize: "獎金",
-            thResult: "結果",
-            tagWinner: "大獎得主",
+            thWishes: "願望數",
+            thPrize: "總獎金",
+            tagWinner: "大獎",
             tagProtocol: "聖誕協議",
             noHistory: "暫無紀錄",
             labelContract: "合約地址:",
@@ -322,8 +322,8 @@
             labelHistory: "📜 Past Winners (History)",
             thRound: "Round",
             thWinner: "Winner",
-            thPrize: "Prize",
-            thResult: "Result",
+            thWishes: "Wishes",
+            thPrize: "Total Prize",
             tagWinner: "Jackpot",
             tagProtocol: "Protocol",
             noHistory: "No history yet",
@@ -381,8 +381,8 @@
             labelHistory: "📜 過去の勝者 (History)",
             thRound: "ラウンド",
             thWinner: "勝者",
-            thPrize: "賞金",
-            thResult: "結果",
+            thWishes: "願い事の数",
+            thPrize: "賞金総額",
             tagWinner: "大当たり",
             tagProtocol: "プロトコル",
             noHistory: "記録なし",
@@ -440,8 +440,8 @@
             labelHistory: "📜 지난 우승자 (History)",
             thRound: "라운드",
             thWinner: "우승자",
-            thPrize: "상금",
-            thResult: "결과",
+            thWishes: "소원 수",
+            thPrize: "총 상금",
             tagWinner: "잭팟",
             tagProtocol: "프로토콜",
             noHistory: "기록 없음",
@@ -469,7 +469,7 @@
         }
     };
 
-    let currentLang = 'zh'; // Default language
+    var currentLang = 'zh';
 
     function changeLanguage(lang) {
         currentLang = lang;
@@ -483,7 +483,6 @@
             }
         });
 
-        // Dynamic text updates
         const wishBtn = document.getElementById('wish-btn');
         if (wishBtn.disabled && wishBtn.innerText.includes('...')) {
             wishBtn.innerText = translations[lang].btnWishing;
@@ -493,27 +492,26 @@
              withdrawBtn.innerText = translations[lang].btnWithdrawing;
         }
         
-        // Refresh Lists (History / Legacy) if visible
-        const historyRows = document.querySelectorAll('#history-list tr');
-        if(historyRows.length > 0 && !historyRows[0].innerText.includes('Loading')) {
+        // Refresh Lists if loaded
+        if (gameContract) {
              updateHistory(currentRoundId);
+             if(userAddress) checkLegacyDividends(userAddress);
         }
-        if (userAddress) checkLegacyDividends(userAddress);
     }
 
-    // Auto-detect browser language
     const browserLang = navigator.language || navigator.userLanguage;
     if (browserLang.startsWith('ja')) changeLanguage('ja');
     else if (browserLang.startsWith('ko')) changeLanguage('ko');
     else if (browserLang.startsWith('en')) changeLanguage('en');
     else changeLanguage('zh'); 
 
-    // --- Contract Configuration ---
-    const CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
-    const EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
-    const CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
+    // --- Config ---
+    var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
+    var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
+    var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
-    const ABI = [
+    // 只需要基本的 View 功能
+    var ABI = [
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
@@ -523,16 +521,13 @@
         "function wishers(uint256, address) view returns (uint256, uint256, uint256, uint256, bool)",
         "function getPendingDividends(uint256, address) view returns (uint256)",
         "function getPendingChristmasGift(uint256, address) view returns (uint256)",
-        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)",
-        "event RoundEnded(uint256 indexed roundId, address winner, uint256 potWon)",
-        "event ChristmasProtocolTriggered(uint256 indexed roundId, uint256 totalDistribute, uint256 perShare)"
+        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)"
     ];
 
-    // 🔴 變數改名 + 改用 var 避免初始化錯誤
+    // 全域變數使用 var 避免 TDZ
     var gameProvider = null;
     var gameSigner = null;
     var gameContract = null;
-    
     var userAddress = null;
     var currentRoundId = 1;
     var countdownInterval;
@@ -542,7 +537,6 @@
 
     startProtocolCountdown();
     
-    // Safety check
     window.onload = function() {
          if (typeof ethers === 'undefined') {
              alert("⚠️ 錯誤：核心檔案加載失敗！\n請嘗試：\n1. 重新整理網頁\n2. 關閉 AdBlock\n3. 使用 Chrome/Edge 瀏覽器");
@@ -555,7 +549,6 @@
         try {
             if (typeof ethers === 'undefined') throw new Error("Ethers.js library not loaded.");
 
-            // 🔴 使用 gameProvider + var，不再使用 let/const
             gameProvider = new ethers.providers.Web3Provider(window.ethereum);
             await gameProvider.send("eth_requestAccounts", []);
             gameSigner = gameProvider.getSigner();
@@ -568,8 +561,8 @@
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('history-card').classList.remove('hidden');
 
-            const { chainId } = await gameProvider.getNetwork();
-            if (chainId !== 25) {
+            const network = await gameProvider.getNetwork();
+            if (network.chainId !== 25) {
                 try {
                     await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x19' }] });
                 } catch (err) { alert(translations[currentLang].alertWrongChain); }
@@ -587,14 +580,14 @@
     async function refreshData() {
         if (!gameContract) return;
         try {
-            const rId = await gameContract.roundId();
+            var rId = await gameContract.roundId();
             currentRoundId = rId.toNumber();
             
-            const pot = await gameContract.grandPot();
-            const roundData = await gameContract.rounds(currentRoundId);
-            const christmasEnded = roundData[2];
-            const endTimestamp = roundData[3].toNumber();
-            const totalWishes = roundData[4].toNumber();
+            var pot = await gameContract.grandPot();
+            var roundData = await gameContract.rounds(currentRoundId);
+            var christmasEnded = roundData[2];
+            var endTimestamp = roundData[3].toNumber();
+            var totalWishes = roundData[4].toNumber();
             
             document.getElementById('grand-pot').innerText = ethers.utils.formatEther(pot) + " CRO";
             
@@ -613,37 +606,35 @@
                 document.getElementById('dashboard').style.display = 'none';
                 document.getElementById('christmas-card').classList.remove('hidden');
                 if (userAddress) {
-                    const gift = await gameContract.getPendingChristmasGift(currentRoundId, userAddress);
+                    var gift = await gameContract.getPendingChristmasGift(currentRoundId, userAddress);
                     document.getElementById('christmas-gift-amount').innerText = ethers.utils.formatEther(gift) + " CRO";
                 }
             }
 
             if (userAddress && !christmasEnded) {
-                const pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
-                const wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
+                var pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
+                var wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
                 document.getElementById('my-dividends').innerText = parseFloat(ethers.utils.formatEther(pendingDivs)).toFixed(4);
                 document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
             }
 
-            // Calls independent of standard refresh to avoid blocking
-            if (userAddress) {
-                updateHistory(currentRoundId);
-                checkLegacyDividends(userAddress);
-            }
+            // 更新歷史與舊分紅 (獨立執行，不卡主流程)
+            updateHistory(currentRoundId);
+            if (userAddress) checkLegacyDividends(userAddress);
 
         } catch (err) { console.error("Error fetching data:", err); }
     }
 
-    // --- Legacy Dividends Logic (Scan old rounds) ---
+    // --- Legacy Dividends Logic ---
     async function checkLegacyDividends(user) {
         if (currentRoundId <= 1) return;
         
-        let html = ``;
-        let hasClaims = false;
+        var html = ``;
+        var hasClaims = false;
 
-        for (let i = 1; i < currentRoundId; i++) {
+        for (var i = 1; i < currentRoundId; i++) {
             try {
-                const pending = await gameContract.getPendingDividends(i, user);
+                var pending = await gameContract.getPendingDividends(i, user);
                 if (pending.gt(0)) {
                     hasClaims = true;
                     html += `
@@ -656,7 +647,7 @@
             } catch (e) {}
         }
 
-        const container = document.getElementById('legacy-claims');
+        var container = document.getElementById('legacy-claims');
         if (hasClaims) {
             container.innerHTML = `<div class="legacy-box"><div style="font-weight:bold;margin-bottom:5px;">${translations[currentLang].labelLegacy}</div>${html}</div>`;
             container.classList.remove('hidden');
@@ -668,89 +659,73 @@
     async function withdrawOld(rId) {
         if (!gameContract) return;
         try {
-            const tx = await gameContract.withdrawDividends(rId, { gasLimit: 200000 });
+            var tx = await gameContract.withdrawDividends(rId, { gasLimit: 200000 });
             await tx.wait();
             alert("💰 Success! Old dividends claimed.");
             refreshData();
         } catch (err) { alert("Error claiming old dividends."); }
     }
 
-    // --- History Logic (Safe Mode) ---
+    // --- History Logic (Calculation Mode) ---
     async function updateHistory(currentId) {
         if (currentId <= 1) {
             document.getElementById('history-list').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
             return;
         }
 
-        // 1. Render Basic Info First (Fast)
-        let html = '';
-        for (let i = currentId - 1; i >= 1; i--) {
-            html += `<tr id="row-${i}"><td>#${i}</td><td>Loading...</td><td>-</td><td>-</td></tr>`;
-        }
-        document.getElementById('history-list').innerHTML = html;
-
-        // 2. Fetch and Update Details Row by Row
-        for (let i = currentId - 1; i >= 1; i--) {
+        var html = '';
+        for (var i = currentId - 1; i >= 1; i--) {
             try {
-                const rData = await gameContract.rounds(i);
-                const ended = rData[1];
-                const xmasEnded = rData[2];
-                const winner = rData[5];
+                var rData = await gameContract.rounds(i);
+                var ended = rData[1];
+                var xmasEnded = rData[2];
+                var totalWishes = rData[4].toNumber();
+                var winner = rData[5];
 
-                let winnerDisplay = "---";
-                let resultTag = "";
+                var winnerDisplay = "---";
+                var resultTag = "";
+                
+                // 核心改動：直接計算獎金，不依賴 Event Logs
+                // 獎金 = 許願數 * 20 CRO * 80% = 許願數 * 16
+                var calcPrize = (totalWishes * 16).toFixed(2) + " CRO";
 
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
                     resultTag = `<span class="protocol-tag">${translations[currentLang].tagProtocol}</span>`;
+                    calcPrize = "50% Pool"; // 聖誕協議無法計算確切金額
                 } else if (ended) {
                     winnerDisplay = winner.slice(0, 6) + "..." + winner.slice(-4);
                     resultTag = `<span class="winner-tag">${translations[currentLang].tagWinner}</span>`;
+                } else {
+                    calcPrize = "Running...";
                 }
 
-                const row = document.getElementById(`row-${i}`);
-                if(row) {
-                    row.innerHTML = `
+                html += `
+                    <tr>
                         <td>#${i}</td>
                         <td style="font-family:monospace; color:#fff;">${winnerDisplay}</td>
-                        <td style="color:var(--xmas-gold); font-weight:bold;" id="prize-${i}">? CRO</td>
-                        <td>${resultTag}</td>
-                    `;
-                }
-            } catch (e) {}
+                        <td>${totalWishes}</td>
+                        <td style="color:var(--xmas-gold); font-weight:bold;">${calcPrize}</td>
+                    </tr>
+                `;
+            } catch (e) { console.log(e); }
         }
-
-        // 3. Try Fetching Events for Prizes
-        try {
-            const endedEvents = await gameContract.queryFilter(gameContract.filters.RoundEnded());
-            const xmasEvents = await gameContract.queryFilter(gameContract.filters.ChristmasProtocolTriggered());
-
-            endedEvents.forEach(e => {
-                const el = document.getElementById(`prize-${e.args.roundId}`);
-                if(el) el.innerText = parseFloat(ethers.utils.formatEther(e.args.potWon)).toFixed(2) + " CRO";
-            });
-            xmasEvents.forEach(e => {
-                const el = document.getElementById(`prize-${e.args.roundId}`);
-                if(el) el.innerText = parseFloat(ethers.utils.formatEther(e.args.totalDistribute)).toFixed(2) + " CRO";
-            });
-        } catch (e) {
-            console.warn("Could not fetch logs for prize details (RPC Limit). Basic history is still shown.");
-        }
+        document.getElementById('history-list').innerHTML = html;
     }
 
     function startCountdown(endTime) {
         if (countdownInterval) clearInterval(countdownInterval);
         countdownInterval = setInterval(() => {
-            const now = Math.floor(Date.now() / 1000);
-            const diff = endTime - now;
-            const timerEl = document.getElementById('timer');
+            var now = Math.floor(Date.now() / 1000);
+            var diff = endTime - now;
+            var timerEl = document.getElementById('timer');
             if (diff <= 0) {
                 timerEl.innerText = translations[currentLang].timerCalculating;
                 timerEl.style.backgroundColor = "#5a0b0f";
             } else {
-                const h = Math.floor(diff / 3600);
-                const m = Math.floor((diff % 3600) / 60);
-                const s = diff % 60;
+                var h = Math.floor(diff / 3600);
+                var m = Math.floor((diff % 3600) / 60);
+                var s = diff % 60;
                 timerEl.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
                 timerEl.style.backgroundColor = diff < 60 ? "#c30f16" : "rgba(195, 15, 22, 0.6)";
             }
@@ -760,17 +735,17 @@
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
         protocolInterval = setInterval(() => {
-            const now = Math.floor(Date.now() / 1000);
-            const diff = CHRISTMAS_TIMESTAMP_STATIC - now;
-            const timerEl = document.getElementById('protocol-timer');
+            var now = Math.floor(Date.now() / 1000);
+            var diff = CHRISTMAS_TIMESTAMP_STATIC - now;
+            var timerEl = document.getElementById('protocol-timer');
             
             if (diff <= 0) {
                 timerEl.innerText = translations[currentLang].protocolReady;
             } else {
-                const d = Math.floor(diff / 86400);
-                const h = Math.floor((diff % 86400) / 3600);
-                const m = Math.floor((diff % 3600) / 60);
-                const s = diff % 60;
+                var d = Math.floor(diff / 86400);
+                var h = Math.floor((diff % 86400) / 3600);
+                var m = Math.floor((diff % 3600) / 60);
+                var s = diff % 60;
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
@@ -778,17 +753,17 @@
 
     async function makeWish() {
         if (!gameContract) return;
-        const btn = document.getElementById('wish-btn');
+        var btn = document.getElementById('wish-btn');
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnWishing;
-            const tx = await gameContract.wish({ value: ethers.utils.parseEther("20"), gasLimit: 300000 });
+            var tx = await gameContract.wish({ value: ethers.utils.parseEther("20"), gasLimit: 300000 });
             await tx.wait();
             alert(translations[currentLang].alertWishSuccess);
             refreshData();
         } catch (err) {
             console.error(err);
-            let msg = err.reason || err.message;
+            var msg = err.reason || err.message;
             if (msg.includes("Cooldown")) msg = translations[currentLang].alertCooldown;
             alert(translations[currentLang].alertWishFail + msg);
         } finally {
@@ -799,11 +774,11 @@
 
     async function withdraw() {
         if (!gameContract) return;
-        const btn = document.getElementById('withdraw-btn');
+        var btn = document.getElementById('withdraw-btn');
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnWithdrawing;
-            const tx = await gameContract.withdrawDividends(currentRoundId, { gasLimit: 200000 });
+            var tx = await gameContract.withdrawDividends(currentRoundId, { gasLimit: 200000 });
             await tx.wait();
             alert(translations[currentLang].alertWithdrawSuccess);
             refreshData();
@@ -818,11 +793,11 @@
 
     async function claimChristmas() {
         if (!gameContract) return;
-        const btn = event.target;
+        var btn = event.target;
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnClaimingXmas;
-            const tx = await gameContract.claimChristmasGift(currentRoundId);
+            var tx = await gameContract.claimChristmasGift(currentRoundId);
             await tx.wait();
             alert(translations[currentLang].alertClaimXmasSuccess);
             document.getElementById('christmas-card').innerHTML = translations[currentLang].htmlClaimXmasDone;
@@ -836,4 +811,5 @@
 </script>
 </body>
 </html>
+
 
