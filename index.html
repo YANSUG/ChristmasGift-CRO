@@ -199,7 +199,7 @@
                     <th data-i18n="thRound">回合</th>
                     <th data-i18n="thWinner">贏家</th>
                     <th data-i18n="thWishes">願望數</th>
-                    <th data-i18n="thPrize">總獎金</th>
+                    <th data-i18n="thPrize">獨得獎金</th>
                 </tr>
             </thead>
             <tbody id="history-list">
@@ -264,7 +264,7 @@
             thRound: "回合",
             thWinner: "贏家",
             thWishes: "願望數",
-            thPrize: "總獎金",
+            thPrize: "獨得獎金(Won)",
             tagWinner: "大獎",
             tagProtocol: "聖誕協議",
             noHistory: "暫無紀錄",
@@ -323,7 +323,7 @@
             thRound: "Round",
             thWinner: "Winner",
             thWishes: "Wishes",
-            thPrize: "Total Prize",
+            thPrize: "Winner's Prize",
             tagWinner: "Jackpot",
             tagProtocol: "Protocol",
             noHistory: "No history yet",
@@ -382,7 +382,7 @@
             thRound: "ラウンド",
             thWinner: "勝者",
             thWishes: "願い事の数",
-            thPrize: "賞金総額",
+            thPrize: "獲得賞金",
             tagWinner: "大当たり",
             tagProtocol: "プロトコル",
             noHistory: "記録なし",
@@ -441,7 +441,7 @@
             thRound: "라운드",
             thWinner: "우승자",
             thWishes: "소원 수",
-            thPrize: "총 상금",
+            thPrize: "획득 상금",
             tagWinner: "잭팟",
             tagProtocol: "프로토콜",
             noHistory: "기록 없음",
@@ -666,7 +666,7 @@
         } catch (err) { alert("Error claiming old dividends."); }
     }
 
-    // --- History Logic (Calculation Mode) ---
+    // --- History Logic (Fixed Calculation: 12.8 CRO) ---
     async function updateHistory(currentId) {
         if (currentId <= 1) {
             document.getElementById('history-list').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
@@ -685,14 +685,14 @@
                 var winnerDisplay = "---";
                 var resultTag = "";
                 
-                // 核心改動：直接計算獎金，不依賴 Event Logs
-                // 獎金 = 許願數 * 20 CRO * 80% = 許願數 * 16
-                var calcPrize = (totalWishes * 16).toFixed(2) + " CRO";
+                // 核心改動：精準計算贏家獨得獎金
+                // 20 CRO * 0.8 (入池) * 0.8 (贏家獨得) = 12.8 CRO
+                var calcPrize = (totalWishes * 12.8).toFixed(2) + " CRO";
 
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
                     resultTag = `<span class="protocol-tag">${translations[currentLang].tagProtocol}</span>`;
-                    calcPrize = "50% Pool"; // 聖誕協議無法計算確切金額
+                    calcPrize = "50% Pool"; // 聖誕協議
                 } else if (ended) {
                     winnerDisplay = winner.slice(0, 6) + "..." + winner.slice(-4);
                     resultTag = `<span class="winner-tag">${translations[currentLang].tagWinner}</span>`;
