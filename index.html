@@ -57,30 +57,19 @@
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #5c070a, 0 3px 5px rgba(0,0,0,0.5); }
         .btn:disabled { background: #555; border-color: #333; cursor: not-allowed; box-shadow: none; transform: none; }
         
+        /* 領先者狀態按鈕 (綠色) */
         .btn-leading {
             background: linear-gradient(to bottom, var(--xmas-green), #1a3816) !important;
             border-color: #4CAF50 !important;
             cursor: default !important;
         }
         
-        /* 管理員按鈕樣式 */
-        .btn-admin {
-            background: linear-gradient(to right, #FFD700, #FFA500);
-            color: #000;
-            border: 2px solid #fff;
-            animation: pulse-gold 2s infinite;
-        }
-        @keyframes pulse-gold {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-        }
-
         .btn-outline { background: rgba(248, 178, 41, 0.2); border: 2px solid var(--xmas-gold); color: var(--xmas-gold); margin-top: 15px; }
         .btn-outline:hover { background: rgba(248, 178, 41, 0.4); }
 
         .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; color: white; cursor: pointer; border-radius: 5px; }
 
+        /* 👑 領先者顯示區塊 */
         .leader-display {
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--xmas-gold);
@@ -90,14 +79,20 @@
             font-family: monospace;
             color: #ddd;
         }
-        .leader-address { color: var(--xmas-gold); font-weight: bold; font-size: 1.1em; }
+        .leader-address {
+            color: var(--xmas-gold);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
 
+        /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
         .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); font-size: 0.85em; }
         .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); vertical-align: middle; }
         .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
         .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; white-space: nowrap; }
 
+        /* 補領專區樣式 */
         .legacy-box { background: rgba(0,0,0,0.4); border: 1px dashed var(--xmas-gold); padding: 10px; margin-top: 15px; border-radius: 8px; text-align: left; }
         .legacy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding: 5px 0; border-bottom: 1px solid #333; font-size: 0.9em; }
 
@@ -119,32 +114,9 @@
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
         .footer-links a:hover { color: #fff; border-bottom-style: solid; }
-
-        /* 全螢幕禮物雨動畫容器 */
-        #gift-rain-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            overflow: hidden;
-            display: none;
-        }
-        .falling-gift {
-            position: absolute;
-            font-size: 2em;
-            animation: fall linear forwards;
-        }
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
     </style>
 </head>
 <body>
-
-<div id="gift-rain-container"></div>
 
 <div class="lang-switcher">
     <button class="lang-btn" onclick="changeLanguage('en')" id="btn-en">EN</button>
@@ -227,15 +199,7 @@
     <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        
-        <div id="admin-action-area" class="hidden" style="margin-top: 20px; border-top: 1px dashed #fff; padding-top: 15px;">
-             <p style="color: #FFD700; font-weight: bold;">⚠️ 偵測到管理員權限 (Admin Detected)</p>
-             <button class="btn btn-admin" onclick="adminTriggerProtocol()">
-                🎅 Admin: 強制分發禮物 (Trigger)
-             </button>
-        </div>
-
-        <div style="font-size: 0.8em; color: #ccc; margin-top:10px;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
+        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -295,9 +259,6 @@
 <script>
     console.log("Script loaded successfully. Ethers version:", typeof ethers !== 'undefined' ? ethers.version : 'Not loaded');
 
-    // --- 設定管理員地址 ---
-    const ADMIN_ADDRESS = "0x264854b0c97891ac1FADec8bE663869A85DC5817";
-
     // --- Internationalization (i18n) ---
     const translations = {
         zh: {
@@ -307,11 +268,11 @@
             connectBtn: "🎄 連結錢包，領取驚喜 (Connect)",
             rulesSummary: "📜 來自聖誕老人的遊戲說明書 (點擊展開)",
             rulesIntro: "歡迎來到北極最刺激的禮物爭奪戰！規則很簡單，但充滿驚喜：",
-            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class="highlight">20 CRO</span>。</li>
+            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。",
             rule2: "💰 <b>資金去向：</b> 80% 進入這個巨大的禮物盒(獎池)，10% 立即分給之前的參與者，10% 由聖誕老人保管(開發與黑洞)。",
-            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class="highlight">80% 大獎</span>！</li>
-            rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！</li>
-            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class="highlight">12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class="highlight">50% 的獎金平分</span>給所有許過願的好孩子！</li>
+            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class='highlight'>80% 大獎</span>！",
+            rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！",
+            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class='highlight'>12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class='highlight'>50% 的獎金平分</span>給所有許過願的好孩子！",
             ruleFooter: "\"記得，每次許願後要休息 35 秒喔！\"",
             labelPot: "🎁 當前累積禮物盒 (Grand Prize Pot)",
             labelLeader: "👑 目前潛在得主 (Current Leader)",
@@ -349,7 +310,7 @@
             btnWishing: "🎅 聖誕老人確認中...",
             alertWishSuccess: "Ho Ho Ho! 許願成功！祝你成為最幸運的孩子！",
             alertWishFail: "許願失敗：",
-            alertCooldown: "Santa says: Please wait a moment (Cooldown)!",
+            alertCooldown: "聖誕老人說：請再等一下 (冷卻中)!",
             btnWithdrawing: "打包中...",
             alertWithdrawSuccess: "💰 叮叮噹！分紅已經放入你的錢包囉！",
             alertWithdrawFail: "提領失敗，請稍後再試",
@@ -494,7 +455,7 @@
             rule2: "💰 <b>자금 흐름:</b> 80%는 거대한 선물 상자(상금 풀)로, 10%는 이전 참가자들에게 즉시 배당, 10%는 산타가 관리(개발 및 블랙홀).",
             rule3: "⏳ <b>생존 규칙:</b> 마지막으로 소원을 빈 사람이 되세요. 타이머가 0이 되면 선물 상자의 <span class='highlight'>80%를 독차지</span>합니다!",
             rule4: "🤝 <b>모두가 승자:</b> 일찍 참여할수록 나중에 들어오는 사람들의 참가비에서 더 많은 배당금을 받습니다. 언제든 출금 가능!",
-            rule5: "🎄 <b>궁극의 크리스마스 서프라이즈:</b> <span class='highlight'>12月 26일 (UTC 12:00)</span>까지 게임이 끝나지 않으면, 산타가 강제로 상자를 열어 상금의 <span class='highlight'>50%를 소원을 빈 모든 사람에게 균등하게 나눕니다</span>!",
+            rule5: "🎄 <b>궁극의 크리스마스 서프라이즈:</b> <span class='highlight'>12월 26일 (UTC 12:00)</span>까지 게임이 끝나지 않으면, 산타가 강제로 상자를 열어 상금의 <span class='highlight'>50%를 소원을 빈 모든 사람에게 균등하게 나눕니다</span>!",
             ruleFooter: "\"소원을 빈 후에는 35초 동안 휴식해야 해요!\"",
             labelPot: "🎁 현재 누적 선물 상자 (총 상금)",
             labelLeader: "👑 현재 잠재적 우승자",
@@ -589,7 +550,6 @@
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
-        "function triggerChristmasProtocol() external", 
         "function grandPot() view returns (uint256)",
         "function roundId() view returns (uint256)",
         "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
@@ -689,13 +649,6 @@
             document.getElementById('current-leader').innerText = leaderDisplay;
 
             updateWishButtonState();
-
-            // 檢查管理員權限
-            if (userAddress && userAddress.toLowerCase() === ADMIN_ADDRESS.toLowerCase() && !christmasEnded) {
-                document.getElementById('admin-action-area').classList.remove('hidden');
-            } else {
-                document.getElementById('admin-action-area').classList.add('hidden');
-            }
 
             if (totalWishes < 100) {
                 document.getElementById('timer-section').classList.add('hidden');
@@ -929,54 +882,10 @@
             btn.innerText = translations[currentLang].claimXmasBtn;
         }
     }
-
-    // --- 管理員觸發與動畫邏輯 ---
-    async function adminTriggerProtocol() {
-        if (!gameContract) return;
-        if (!confirm("⚠️ ADMIN WARNING: 你即將強制分發獎金。\n這將花費較高的 Gas Fee，確定執行嗎？")) return;
-
-        try {
-            // 修正：現在呼叫的是正確的開門函式
-            var tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2000000 }); 
-            
-            // 開始播放動畫
-            startGiftRain();
-            
-            await tx.wait();
-            alert("🎉 聖誕協議啟動成功！大家可以領獎了！");
-            
-            // 停止動畫並刷新
-            setTimeout(() => {
-                stopGiftRain();
-                refreshData();
-            }, 5000);
-            
-        } catch (err) {
-            console.error(err);
-            alert("觸發失敗: " + (err.reason || err.message));
-        }
-    }
-
-    function startGiftRain() {
-        const container = document.getElementById('gift-rain-container');
-        container.style.display = 'block';
-        container.innerHTML = ''; 
-        
-        for (let i = 0; i < 50; i++) {
-            const gift = document.createElement('div');
-            gift.classList.add('falling-gift');
-            gift.innerText = Math.random() > 0.5 ? '🎁' : '✨';
-            gift.style.left = Math.random() * 100 + 'vw';
-            gift.style.animationDuration = (Math.random() * 2 + 2) + 's'; // 2~4s
-            gift.style.fontSize = (Math.random() * 2 + 1) + 'em';
-            container.appendChild(gift);
-        }
-    }
-
-    function stopGiftRain() {
-        document.getElementById('gift-rain-container').style.display = 'none';
-    }
 </script>
 </body>
 </html>
+
+
+
 
