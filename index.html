@@ -111,12 +111,6 @@
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
         .footer-links a:hover { color: #fff; border-bottom-style: solid; }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
-        }
     </style>
 </head>
 <body>
@@ -203,11 +197,8 @@
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
         
-        <div id="protocol-action-area" class="hidden" style="margin-top: 15px;">
-            <p style="color: #ff4444; font-weight: bold; animation: pulse 1s infinite;">⚠️ 時間已到！必須先由一人執行觸發 (Trigger First)</p>
-            <button class="btn" onclick="triggerProtocol()" style="background: linear-gradient(to bottom, #ff0000, #990000); border: 2px solid white;">
-                🎅 步驟一：開啟聖誕協議 (只需一人點擊)
-            </button>
+        <div id="protocol-status-text" class="hidden" style="margin-top:10px; color: #f8b229; font-weight:bold;">
+            ⏳ 等待聖誕老人發送禮物中... (Waiting for Distribution)
         </div>
 
         <div style="font-size: 0.8em; color: #ccc; margin-top:10px;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
@@ -220,7 +211,7 @@
         <div class="stat-value" id="christmas-gift-amount" style="font-size: 2em; margin-bottom: 20px; color: var(--snow-white); text-shadow: 0 0 10px var(--xmas-gold);">0.0 CRO</div>
         
         <button class="btn" style="background: linear-gradient(to bottom, var(--xmas-gold), #c37c0f); border: none; color: var(--bg-dark); font-size: 1.5em;" onclick="claimChristmas()" data-i18n="claimXmasBtn">
-            🎁 步驟二：立即拆開紅包 (人人有獎)
+            🎁 立即拆開紅包 (Open Gift)
         </button>
     </div>
 
@@ -282,7 +273,7 @@
             connectBtn: "🎄 連結錢包，領取驚喜 (Connect)",
             rulesSummary: "📜 來自聖誕老人的遊戲說明書 (點擊展開)",
             rulesIntro: "歡迎來到北極最刺激的禮物爭奪戰！規則很簡單，但充滿驚喜：",
-            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。",
+            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。</li>
             rule2: "💰 <b>資金去向：</b> 80% 進入這個巨大的禮物盒(獎池)，10% 立即分給之前的參與者，10% 由聖誕老人保管(開發與黑洞)。",
             rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class='highlight'>80% 大獎</span>！",
             rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！",
@@ -303,7 +294,7 @@
             xmasTitle: "🎄 聖誕快樂！驚喜時刻！",
             xmasDesc: "聖誕老人強制打開了禮物盒！所有參與者人人有獎！",
             xmasYourGift: "您的專屬聖誕紅包：",
-            claimXmasBtn: "🎁 步驟二：立即拆開紅包 (人人有獎)",
+            claimXmasBtn: "🎁 立即拆開紅包 (Open Gift)",
             labelProtocol: "🎄 聖誕協議強制結算倒數",
             labelProtocolDesc: "如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！",
             labelHistory: "📜 歷屆榮譽榜 (History)",
@@ -364,7 +355,7 @@
             xmasTitle: "🎄 Merry Christmas! Surprise Time!",
             xmasDesc: "Santa has forced the Gift Box open! Everyone gets a prize!",
             xmasYourGift: "Your Exclusive Christmas Red Envelope:",
-            claimXmasBtn: "🎁 Step 2: Open Gift Now",
+            claimXmasBtn: "🎁 Open Gift Now",
             labelProtocol: "🎄 Christmas Protocol Countdown",
             labelProtocolDesc: "If game not ended, Santa forces distribution on Dec 26, 12:00 UTC!",
             labelHistory: "📜 Past Winners (History)",
@@ -425,7 +416,7 @@
             xmasTitle: "🎄 メリークリスマス！サプライズタイム！",
             xmasDesc: "サンタがギフトボックスを強制オープン！参加者全員にプレゼント！",
             xmasYourGift: "あなたの専用お年玉：",
-            claimXmasBtn: "🎁 Step 2: 今すぐお年玉を開ける",
+            claimXmasBtn: "🎁 今すぐお年玉を開ける",
             labelProtocol: "🎄 クリスマス・プロトコル・カウントダウン",
             labelProtocolDesc: "ゲームが続いている場合、12/26 12:00 UTCにサンタが強制配当を行います！",
             labelHistory: "📜 過去の勝者 (History)",
@@ -486,7 +477,7 @@
             xmasTitle: "🎄 메리 크리스마스! 서프라이즈 타임!",
             xmasDesc: "산타가 선물 상자를 강제로 열었습니다! 참가자 전원에게 선물 증정!",
             xmasYourGift: "당신의 전용 크리스마스 세뱃돈:",
-            claimXmasBtn: "🎁 Step 2: 지금 세뱃돈 열기",
+            claimXmasBtn: "🎁 지금 세뱃돈 열기",
             labelProtocol: "🎄 크리스마스 프로토콜 카운트다운",
             labelProtocolDesc: "게임이 계속되면 12/26 12:00 UTC에 산타가 강제 배당을 진행합니다!",
             labelHistory: "📜 지난 우승자 (History)",
@@ -565,6 +556,7 @@
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
+        // 觸發函式仍需保留在 ABI，因為合約有這功能，但前端不呼叫
         "function triggerChristmasProtocol() external",
         "function grandPot() view returns (uint256)",
         "function roundId() view returns (uint256)",
@@ -666,10 +658,11 @@
 
             updateWishButtonState();
 
-            // 狀態 1: 聖誕協議已生效 -> 顯示領取畫面，隱藏其他
+            // 狀態判斷邏輯
+            // 1. 如果聖誕協議已生效 (christmasEnded = true) -> 顯示領取畫面
             if (christmasEnded) {
                 document.getElementById('game-card').classList.add('hidden');
-                document.getElementById('protocol-card').classList.add('hidden'); // 隱藏觸發按鈕
+                document.getElementById('protocol-card').classList.add('hidden'); // 倒數卡片也隱藏
                 document.getElementById('dashboard').classList.add('hidden');
                 document.getElementById('christmas-card').classList.remove('hidden'); // 顯示領取按鈕
                 
@@ -678,7 +671,7 @@
                     document.getElementById('christmas-gift-amount').innerText = ethers.utils.formatEther(gift) + " CRO";
                 }
             } 
-            // 狀態 2: 聖誕協議未生效，但遊戲正常進行
+            // 2. 正常遊戲進行中 (或等待觸發)
             else {
                 document.getElementById('game-card').classList.remove('hidden');
                 document.getElementById('christmas-card').classList.add('hidden');
@@ -693,8 +686,9 @@
                     startCountdown(endTimestamp);
                 }
                 
-                // 檢查是否顯示「觸發」按鈕 (只有在時間到且還沒結束時顯示)
+                // 顯示倒數卡片，但不顯示觸發按鈕
                 document.getElementById('protocol-card').classList.remove('hidden');
+                
                 if (userAddress) {
                     var pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
                     var wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
@@ -827,7 +821,7 @@
         }, 1000);
     }
 
-    // 更新後的聖誕協議倒數與按鈕控制
+    // 簡化的倒數計時，僅顯示時間和等待文字
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
         
@@ -835,20 +829,18 @@
             var now = Math.floor(Date.now() / 1000);
             var diff = CHRISTMAS_TIMESTAMP_STATIC - now;
             var timerEl = document.getElementById('protocol-timer');
-            var actionArea = document.getElementById('protocol-action-area');
+            var statusText = document.getElementById('protocol-status-text');
             
             if (diff <= 0) {
                 // 時間到了！
                 timerEl.innerText = translations[currentLang].protocolReady;
-                // 注意：這裡只檢查時間是否到，真正是否顯示按鈕由 refreshData() 的 christmasEnded 狀態決定
-                // 防止已經結束了還顯示觸發按鈕
-                if (actionArea.classList.contains('hidden') && !document.getElementById('christmas-card').classList.contains('hidden') === false) {
-                     // 只有當 Christmas Card 是隱藏的 (代表還沒結束)，才顯示觸發按鈕
-                     actionArea.classList.remove('hidden');
+                // 顯示等待文字，提示使用者還沒被觸發
+                if (statusText.classList.contains('hidden') && !document.getElementById('christmas-card').classList.contains('hidden') === false) {
+                     statusText.classList.remove('hidden');
                 }
             } else {
                 // 時間還沒到
-                actionArea.classList.add('hidden');
+                statusText.classList.add('hidden');
                 
                 var d = Math.floor(diff / 86400);
                 var h = Math.floor((diff % 86400) / 3600);
@@ -857,37 +849,6 @@
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
-    }
-
-    // 步驟1：觸發聖誕協議 (只需一人執行)
-    async function triggerProtocol() {
-        if (!gameContract) return;
-        
-        // 再次確認時間
-        const now = Math.floor(Date.now() / 1000);
-        if (now < CHRISTMAS_TIMESTAMP_STATIC) {
-            alert("⏳ 時間還沒到喔！(Wait for the time)");
-            return;
-        }
-
-        const btn = event.target;
-        try {
-            btn.disabled = true;
-            btn.innerText = "⚡ 觸發結算中 (Triggering)...";
-            
-            // 呼叫合約: gasLimit 250萬
-            const tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2500000 });
-            console.log("Tx sent:", tx.hash);
-            await tx.wait();
-            
-            alert("🎉 聖誕協議已啟動！畫面將切換為「領取模式」。");
-            window.location.reload(); // 重新整理後，refreshData 會偵測到狀態改變，自動切換介面
-        } catch (err) {
-            console.error(err);
-            alert("觸發失敗 (Failed): " + (err.reason || err.message));
-            btn.disabled = false;
-            btn.innerText = "🎅 步驟一：開啟聖誕協議 (只需一人點擊)";
-        }
     }
 
     async function makeWish() {
@@ -935,7 +896,7 @@
         }
     }
 
-    // 步驟2：領取聖誕禮物 (所有人)
+    // 領取聖誕禮物 (所有人)
     async function claimChristmas() {
         if (!gameContract) return;
         var btn = event.target;
@@ -957,6 +918,7 @@
 </script>
 </body>
 </html>
+
 
 
 
