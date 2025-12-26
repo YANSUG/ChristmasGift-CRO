@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="pageTitle">Santa's Infinite Gift Box | 聖誕老人的無限禮物盒</title>
+    <title>Santa's Infinite Gift Box | 聖誕老人的無限禮物盒</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
@@ -21,7 +21,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--bg-dark);
-            background-image: url('https://www.transparenttextures.com/patterns/snow.png'), linear-gradient(to bottom, #0f1a2a, #3a1c1c);
+            background-image: linear-gradient(to bottom, #0f1a2a, #3a1c1c);
             color: var(--snow-white);
             margin: 0;
             padding: 20px;
@@ -30,12 +30,10 @@
             overflow-x: hidden;
         }
 
-        /* 語言切換器 */
         .lang-switcher { position: absolute; top: 15px; right: 15px; z-index: 10; }
         .lang-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--xmas-gold); color: var(--xmas-gold); padding: 5px 10px; margin-left: 5px; cursor: pointer; border-radius: 5px; font-size: 0.9em; }
         .lang-btn.active { background: var(--xmas-gold); color: var(--bg-dark); font-weight: bold; }
 
-        /* 雪花動畫 */
         .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
         .snowflake { position: absolute; color: #fff; font-size: 1em; opacity: 0.8; }
 
@@ -68,20 +66,8 @@
 
         .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; color: white; cursor: pointer; border-radius: 5px; }
 
-        .leader-display {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--xmas-gold);
-            border-radius: 10px;
-            padding: 10px;
-            margin: 15px 0;
-            font-family: monospace;
-            color: #ddd;
-        }
-        .leader-address {
-            color: var(--xmas-gold);
-            font-weight: bold;
-            font-size: 1.1em;
-        }
+        .leader-display { background: rgba(0,0,0,0.3); border: 1px solid var(--xmas-gold); border-radius: 10px; padding: 10px; margin: 15px 0; font-family: monospace; color: #ddd; }
+        .leader-address { color: var(--xmas-gold); font-weight: bold; font-size: 1.1em; }
 
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
         .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); font-size: 0.85em; }
@@ -111,6 +97,9 @@
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
         .footer-links a:hover { color: #fff; border-bottom-style: solid; }
+
+        @keyframes snowfall { 0% { transform: translateY(-10vh); } 100% { transform: translateY(100vh); } }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -124,15 +113,11 @@
 
 <div class="snowflakes" aria-hidden="true">
   <div class="snowflake" style="left: 10%; animation: snowfall 10s linear infinite;">❄</div>
-  <div class="snowflake" style="left: 30%; animation: snowfall 12s linear infinite, snowfall-shake 4s ease-in-out infinite;">❅</div>
+  <div class="snowflake" style="left: 30%; animation: snowfall 12s linear infinite;">❅</div>
   <div class="snowflake" style="left: 50%; animation: snowfall 8s linear infinite;">❆</div>
-  <div class="snowflake" style="left: 70%; animation: snowfall 14s linear infinite, snowfall-shake 5s ease-in-out infinite;">❄</div>
+  <div class="snowflake" style="left: 70%; animation: snowfall 14s linear infinite;">❄</div>
   <div class="snowflake" style="left: 90%; animation: snowfall 11s linear infinite;">❅</div>
 </div>
-<style>
-@keyframes snowfall { 0% { transform: translateY(-10vh); } 100% { transform: translateY(100vh); } }
-@keyframes snowfall-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(20px); } }
-</style>
 
 <div class="container">
     <span class="santa-icon">🎅</span>
@@ -156,7 +141,6 @@
                     <li data-i18n="rule4">🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！</li>
                     <li data-i18n="rule5">🎄 <b>聖誕終極驚喜：</b> 如果到 <span class="highlight">12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class="highlight">50% 的獎金平分</span>給所有許過願的好孩子！</li>
                 </ul>
-                <p style="text-align: center; margin-top: 10px;"><i data-i18n="ruleFooter">"記得，每次許願後要休息 35 秒喔！"</i></p>
             </div>
         </details>
     </div>
@@ -164,19 +148,15 @@
     <div class="card" id="game-card">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelPot">🎁 當前累積禮物盒 (Grand Prize Pot)</div>
         <div class="pot-display" id="grand-pot">0.0 CRO</div>
-        
         <hr style="border-color: rgba(255,255,255,0.2); opacity: 0.5;">
-        
         <div class="leader-display">
             <div style="font-size:0.9em; margin-bottom:5px;" data-i18n="labelLeader">👑 目前潛在得主 (Current Leader)</div>
             <div class="leader-address" id="current-leader">Loading...</div>
         </div>
-
         <div id="timer-section">
             <div class="stat-label" data-i18n="labelTimer">⏰ 距離開獎剩下 (Time Remaining)</div>
             <div class="timer-display" id="timer">Loading...</div>
         </div>
-
         <div id="warmup-section" class="hidden">
             <div class="stat-label" data-i18n="labelWarmup">🔥 聖誕集氣中 (Warm-up Phase)</div>
             <div class="timer-display" style="background: var(--xmas-gold); color: var(--bg-dark);">
@@ -184,7 +164,6 @@
             </div>
             <small style="color: #ddd;" data-i18n="warmupHint">🎅：集滿 100 個願望，倒數計時才會開始喔！現在是累積獎金的好時機！</small>
         </div>
-
         <button id="wish-btn" class="btn" style="margin-top: 25px;" onclick="makeWish()" data-i18n="wishBtn">
             ✨ 我要許願 (投入 20 CRO)
         </button>
@@ -209,7 +188,6 @@
         <p style="font-size: 1.1em;" data-i18n="xmasDesc">聖誕老人強制打開了禮物盒！所有參與者人人有獎！</p>
         <p data-i18n="xmasYourGift">您的專屬聖誕紅包：</p>
         <div class="stat-value" id="christmas-gift-amount" style="font-size: 2em; margin-bottom: 20px; color: var(--snow-white); text-shadow: 0 0 10px var(--xmas-gold);">0.0 CRO</div>
-        
         <button class="btn" style="background: linear-gradient(to bottom, var(--xmas-gold), #c37c0f); border: none; color: var(--bg-dark); font-size: 1.5em;" onclick="claimChristmas()" data-i18n="claimXmasBtn">
             🎁 立即拆開紅包 (Open Gift)
         </button>
@@ -228,7 +206,6 @@
             </div>
         </div>
         <button class="btn btn-outline" onclick="withdraw()" id="withdraw-btn" data-i18n="withdrawBtn">💰 將分紅放入口袋 (Claim)</button>
-
         <div id="legacy-claims" class="hidden"></div>
     </div>
 
@@ -262,9 +239,37 @@
 </div>
 
 <script>
-    console.log("Script loaded successfully. Ethers version:", typeof ethers !== 'undefined' ? ethers.version : 'Not loaded');
+    console.log("Script loaded successfully. Checking Ethers...");
 
-    // --- Internationalization (i18n) ---
+    var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
+    var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
+    var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
+
+    // ABI
+    var ABI = [
+        "function wish() external payable",
+        "function withdrawDividends(uint256 _rId) external",
+        "function claimChristmasGift(uint256 _rId) external",
+        "function triggerChristmasProtocol() external",
+        "function grandPot() view returns (uint256)",
+        "function roundId() view returns (uint256)",
+        "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
+        "function wishers(uint256, address) view returns (uint256, uint256, uint256, uint256, bool)",
+        "function getPendingDividends(uint256, address) view returns (uint256)",
+        "function getPendingChristmasGift(uint256, address) view returns (uint256)",
+        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)"
+    ];
+
+    // Variables
+    var gameProvider = null;
+    var gameSigner = null;
+    var gameContract = null;
+    var userAddress = null;
+    var currentRoundId = 1;
+    var currentLeader = null;
+    var countdownInterval;
+    var protocolInterval;
+
     const translations = {
         zh: {
             pageTitle: "Santa's Infinite Gift Box | 聖誕老人的無限禮物盒",
@@ -273,7 +278,7 @@
             connectBtn: "🎄 連結錢包，領取驚喜 (Connect)",
             rulesSummary: "📜 來自聖誕老人的遊戲說明書 (點擊展開)",
             rulesIntro: "歡迎來到北極最刺激的禮物爭奪戰！規則很簡單，但充滿驚喜：",
-            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。</li>
+            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。",
             rule2: "💰 <b>資金去向：</b> 80% 進入這個巨大的禮物盒(獎池)，10% 立即分給之前的參與者，10% 由聖誕老人保管(開發與黑洞)。",
             rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class='highlight'>80% 大獎</span>！",
             rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！",
@@ -545,38 +550,6 @@
     else if (browserLang.startsWith('en')) changeLanguage('en');
     else changeLanguage('zh'); 
 
-    // --- Config ---
-    var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
-    var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
-    // 您的合約時間設定 (請確保這跟合約設定的一致，如果是 2024 年則為 1735214400)
-    var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
-
-    // ABI
-    var ABI = [
-        "function wish() external payable",
-        "function withdrawDividends(uint256 _rId) external",
-        "function claimChristmasGift(uint256 _rId) external",
-        // 觸發函式仍需保留在 ABI，因為合約有這功能，但前端不呼叫
-        "function triggerChristmasProtocol() external",
-        "function grandPot() view returns (uint256)",
-        "function roundId() view returns (uint256)",
-        "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
-        "function wishers(uint256, address) view returns (uint256, uint256, uint256, uint256, bool)",
-        "function getPendingDividends(uint256, address) view returns (uint256)",
-        "function getPendingChristmasGift(uint256, address) view returns (uint256)",
-        "function CHRISTMAS_END_TIMESTAMP() view returns (uint256)"
-    ];
-
-    // Variables
-    var gameProvider = null;
-    var gameSigner = null;
-    var gameContract = null;
-    var userAddress = null;
-    var currentRoundId = 1;
-    var currentLeader = null;
-    var countdownInterval;
-    var protocolInterval;
-
     document.getElementById('contract-link').href = EXPLORER_URL;
 
     startProtocolCountdown();
@@ -597,7 +570,6 @@
         }
         
         try {
-            // Ethers v5 Provider
             gameProvider = new ethers.providers.Web3Provider(window.ethereum);
             console.log("Provider created");
             
@@ -658,21 +630,17 @@
 
             updateWishButtonState();
 
-            // 狀態判斷邏輯
-            // 1. 如果聖誕協議已生效 (christmasEnded = true) -> 顯示領取畫面
             if (christmasEnded) {
                 document.getElementById('game-card').classList.add('hidden');
-                document.getElementById('protocol-card').classList.add('hidden'); // 倒數卡片也隱藏
+                document.getElementById('protocol-card').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('hidden');
-                document.getElementById('christmas-card').classList.remove('hidden'); // 顯示領取按鈕
+                document.getElementById('christmas-card').classList.remove('hidden');
                 
                 if (userAddress) {
                     var gift = await gameContract.getPendingChristmasGift(currentRoundId, userAddress);
                     document.getElementById('christmas-gift-amount').innerText = ethers.utils.formatEther(gift) + " CRO";
                 }
-            } 
-            // 2. 正常遊戲進行中 (或等待觸發)
-            else {
+            } else {
                 document.getElementById('game-card').classList.remove('hidden');
                 document.getElementById('christmas-card').classList.add('hidden');
                 
@@ -686,7 +654,6 @@
                     startCountdown(endTimestamp);
                 }
                 
-                // 顯示倒數卡片，但不顯示觸發按鈕
                 document.getElementById('protocol-card').classList.remove('hidden');
                 
                 if (userAddress) {
@@ -705,7 +672,6 @@
 
     function updateWishButtonState() {
         if (!userAddress || !currentLeader) return;
-        
         var btn = document.getElementById('wish-btn');
         if (currentLeader.toLowerCase() === userAddress.toLowerCase()) {
             btn.innerText = translations[currentLang].btnYouAreLeading;
@@ -720,10 +686,8 @@
 
     async function checkLegacyDividends(user) {
         if (currentRoundId <= 1) return;
-        
         var html = ``;
         var hasClaims = false;
-
         for (var i = 1; i < currentRoundId; i++) {
             try {
                 var pending = await gameContract.getPendingDividends(i, user);
@@ -738,7 +702,6 @@
                 }
             } catch (e) {}
         }
-
         var container = document.getElementById('legacy-claims');
         if (hasClaims) {
             container.innerHTML = `<div class="legacy-box"><div style="font-weight:bold;margin-bottom:5px;">${translations[currentLang].labelLegacy}</div>${html}</div>`;
@@ -763,7 +726,6 @@
             document.getElementById('history-list').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">${translations[currentLang].noHistory}</td></tr>`;
             return;
         }
-
         var html = '';
         for (var i = currentId - 1; i >= 1; i--) {
             try {
@@ -772,12 +734,9 @@
                 var xmasEnded = rData[2];
                 var totalWishes = rData[4].toNumber();
                 var winner = rData[5];
-
                 var winnerDisplay = "---";
                 var resultTag = "";
-                
                 var calcPrize = (totalWishes * 12.8).toFixed(2) + " CRO";
-
                 if (xmasEnded) {
                     winnerDisplay = "🎅 Santa (All)";
                     resultTag = `<span class="protocol-tag">${translations[currentLang].tagProtocol}</span>`;
@@ -788,7 +747,6 @@
                 } else {
                     calcPrize = "Running...";
                 }
-
                 html += `
                     <tr>
                         <td>#${i}</td>
@@ -821,10 +779,8 @@
         }, 1000);
     }
 
-    // 簡化的倒數計時，僅顯示時間和等待文字
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
-        
         protocolInterval = setInterval(() => {
             var now = Math.floor(Date.now() / 1000);
             var diff = CHRISTMAS_TIMESTAMP_STATIC - now;
@@ -832,16 +788,12 @@
             var statusText = document.getElementById('protocol-status-text');
             
             if (diff <= 0) {
-                // 時間到了！
                 timerEl.innerText = translations[currentLang].protocolReady;
-                // 顯示等待文字，提示使用者還沒被觸發
                 if (statusText.classList.contains('hidden') && !document.getElementById('christmas-card').classList.contains('hidden') === false) {
                      statusText.classList.remove('hidden');
                 }
             } else {
-                // 時間還沒到
                 statusText.classList.add('hidden');
-                
                 var d = Math.floor(diff / 86400);
                 var h = Math.floor((diff % 86400) / 3600);
                 var m = Math.floor((diff % 3600) / 60);
@@ -853,11 +805,8 @@
 
     async function makeWish() {
         if (userAddress && currentLeader && userAddress.toLowerCase() === currentLeader.toLowerCase()) {
-            if (!confirm("⚠️ 你目前已經是領先者了 (You are already winning)！\n再次許願只會延長時間，不會增加獲勝機率。\n確定要繼續嗎？")) {
-                return;
-            }
+            if (!confirm("⚠️ 你目前已經是領先者了 (You are already winning)！\n再次許願只會延長時間，不會增加獲勝機率。\n確定要繼續嗎？")) { return; }
         }
-
         if (!gameContract) return;
         var btn = document.getElementById('wish-btn');
         try {
@@ -896,14 +845,12 @@
         }
     }
 
-    // 領取聖誕禮物 (所有人)
     async function claimChristmas() {
         if (!gameContract) return;
         var btn = event.target;
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnClaimingXmas;
-            // 呼叫 claimChristmasGift
             var tx = await gameContract.claimChristmasGift(currentRoundId);
             await tx.wait();
             alert(translations[currentLang].alertClaimXmasSuccess);
@@ -918,12 +865,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
