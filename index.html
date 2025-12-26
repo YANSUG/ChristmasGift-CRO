@@ -307,11 +307,11 @@
             connectBtn: "🎄 連結錢包，領取驚喜 (Connect)",
             rulesSummary: "📜 來自聖誕老人的遊戲說明書 (點擊展開)",
             rulesIntro: "歡迎來到北極最刺激的禮物爭奪戰！規則很簡單，但充滿驚喜：",
-            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class='highlight'>20 CRO</span>。",
+            rule1: "🎁 <b>入場費：</b> 每次許願投入 <span class="highlight">20 CRO</span>。</li>
             rule2: "💰 <b>資金去向：</b> 80% 進入這個巨大的禮物盒(獎池)，10% 立即分給之前的參與者，10% 由聖誕老人保管(開發與黑洞)。",
-            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class='highlight'>80% 大獎</span>！",
-            rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！",
-            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class='highlight'>12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class='highlight'>50% 的獎金平分</span>給所有許過願的好孩子！",
+            rule3: "⏳ <b>生存法則：</b> 成為最後一個許願的人，當倒數計時歸零，你就能獨得禮物盒裡的 <span class="highlight">80% 大獎</span>！</li>
+            rule4: "🤝 <b>人人有獎：</b> 越早參與，你就能分到越多後來者的入場費(分紅)，隨時可提領！</li>
+            rule5: "🎄 <b>聖誕終極驚喜：</b> 如果到 <span class="highlight">12月26日 (UTC 12:00)</span> 遊戲還沒結束，聖誕老人會強制打開禮物盒，將 <span class="highlight">50% 的獎金平分</span>給所有許過願的好孩子！</li>
             ruleFooter: "\"記得，每次許願後要休息 35 秒喔！\"",
             labelPot: "🎁 當前累積禮物盒 (Grand Prize Pot)",
             labelLeader: "👑 目前潛在得主 (Current Leader)",
@@ -349,7 +349,7 @@
             btnWishing: "🎅 聖誕老人確認中...",
             alertWishSuccess: "Ho Ho Ho! 許願成功！祝你成為最幸運的孩子！",
             alertWishFail: "許願失敗：",
-            alertCooldown: "聖誕老人說：請再等一下 (冷卻中)!",
+            alertCooldown: "Santa says: Please wait a moment (Cooldown)!",
             btnWithdrawing: "打包中...",
             alertWithdrawSuccess: "💰 叮叮噹！分紅已經放入你的錢包囉！",
             alertWithdrawFail: "提領失敗，請稍後再試",
@@ -494,7 +494,7 @@
             rule2: "💰 <b>자금 흐름:</b> 80%는 거대한 선물 상자(상금 풀)로, 10%는 이전 참가자들에게 즉시 배당, 10%는 산타가 관리(개발 및 블랙홀).",
             rule3: "⏳ <b>생존 규칙:</b> 마지막으로 소원을 빈 사람이 되세요. 타이머가 0이 되면 선물 상자의 <span class='highlight'>80%를 독차지</span>합니다!",
             rule4: "🤝 <b>모두가 승자:</b> 일찍 참여할수록 나중에 들어오는 사람들의 참가비에서 더 많은 배당금을 받습니다. 언제든 출금 가능!",
-            rule5: "🎄 <b>궁극의 크리스마스 서프라이즈:</b> <span class='highlight'>12월 26일 (UTC 12:00)</span>까지 게임이 끝나지 않으면, 산타가 강제로 상자를 열어 상금의 <span class='highlight'>50%를 소원을 빈 모든 사람에게 균등하게 나눕니다</span>!",
+            rule5: "🎄 <b>궁극의 크리스마스 서프라이즈:</b> <span class='highlight'>12月 26일 (UTC 12:00)</span>까지 게임이 끝나지 않으면, 산타가 강제로 상자를 열어 상금의 <span class='highlight'>50%를 소원을 빈 모든 사람에게 균등하게 나눕니다</span>!",
             ruleFooter: "\"소원을 빈 후에는 35초 동안 휴식해야 해요!\"",
             labelPot: "🎁 현재 누적 선물 상자 (총 상금)",
             labelLeader: "👑 현재 잠재적 우승자",
@@ -589,6 +589,7 @@
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
+        "function triggerChristmasProtocol() external", 
         "function grandPot() view returns (uint256)",
         "function roundId() view returns (uint256)",
         "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
@@ -935,9 +936,10 @@
         if (!confirm("⚠️ ADMIN WARNING: 你即將強制分發獎金。\n這將花費較高的 Gas Fee，確定執行嗎？")) return;
 
         try {
-            var tx = await gameContract.claimChristmasGift(currentRoundId, { gasLimit: 2000000 }); // 高 Gas Limit 避免失敗
+            // 修正：現在呼叫的是正確的開門函式
+            var tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2000000 }); 
             
-            // 開始播放動畫 (不需要等確認，先讓氣氛嗨起來)
+            // 開始播放動畫
             startGiftRain();
             
             await tx.wait();
@@ -958,7 +960,7 @@
     function startGiftRain() {
         const container = document.getElementById('gift-rain-container');
         container.style.display = 'block';
-        container.innerHTML = ''; // 清空
+        container.innerHTML = ''; 
         
         for (let i = 0; i < 50; i++) {
             const gift = document.createElement('div');
@@ -977,3 +979,4 @@
 </script>
 </body>
 </html>
+
