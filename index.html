@@ -558,6 +558,7 @@
     // --- Config ---
     var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
     var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
+    // 您的合約時間設定 (請確保這跟合約設定的一致，如果是 2024 年則為 1735214400)
     var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
     // ABI
@@ -864,7 +865,8 @@
             btn.innerText = "⚡ 觸發結算中 (Triggering)...";
             
             // 呼叫合約
-            const tx = await gameContract.triggerChristmasProtocol({ gasLimit: 500000 });
+            // 修正：大幅提高 gasLimit 到 250萬，解決 Internal JSON-RPC error
+            const tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2500000 });
             console.log("Tx sent:", tx.hash);
             await tx.wait();
             
@@ -943,7 +945,6 @@
 </script>
 </body>
 </html>
-
 
 
 
