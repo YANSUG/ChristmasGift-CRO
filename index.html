@@ -114,13 +114,6 @@
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
         .footer-links a:hover { color: #fff; border-bottom-style: solid; }
-
-        /* 聖誕協議按鈕呼吸動畫 */
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
-        }
     </style>
 </head>
 <body>
@@ -206,15 +199,7 @@
     <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        
-        <div id="protocol-action-area" class="hidden" style="margin-top: 15px;">
-            <p style="color: #ff4444; font-weight: bold; animation: pulse 1s infinite;">⚠️ 時間已到！請點擊下方按鈕觸發分紅！</p>
-            <button class="btn" onclick="triggerProtocol()" style="background: linear-gradient(to bottom, #ff0000, #990000); border: 2px solid white;">
-                🚨 觸發聖誕協議 (Trigger Protocol)
-            </button>
-        </div>
-
-        <div style="font-size: 0.8em; color: #ccc; margin-top:10px;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
+        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -558,7 +543,6 @@
     // --- Config ---
     var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
     var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
-    // 您的合約時間設定 (請確保這跟合約設定的一致，如果是 2024 年則為 1735214400)
     var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
     // ABI
@@ -566,8 +550,6 @@
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
-        // 新增的觸發函式
-        "function triggerChristmasProtocol() external",
         "function grandPot() view returns (uint256)",
         "function roundId() view returns (uint256)",
         "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
@@ -819,26 +801,16 @@
         }, 1000);
     }
 
-    // 更新後的聖誕協議倒數與按鈕控制
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
-        
         protocolInterval = setInterval(() => {
             var now = Math.floor(Date.now() / 1000);
             var diff = CHRISTMAS_TIMESTAMP_STATIC - now;
             var timerEl = document.getElementById('protocol-timer');
-            var actionArea = document.getElementById('protocol-action-area');
             
             if (diff <= 0) {
-                // 時間到了！
                 timerEl.innerText = translations[currentLang].protocolReady;
-                if (actionArea.classList.contains('hidden')) {
-                    actionArea.classList.remove('hidden');
-                }
             } else {
-                // 時間還沒到
-                actionArea.classList.add('hidden');
-                
                 var d = Math.floor(diff / 86400);
                 var h = Math.floor((diff % 86400) / 3600);
                 var m = Math.floor((diff % 3600) / 60);
@@ -846,38 +818,6 @@
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
-    }
-
-    // 新增：觸發聖誕協議的函式
-    async function triggerProtocol() {
-        if (!gameContract) return;
-        
-        // 再次確認時間
-        const now = Math.floor(Date.now() / 1000);
-        if (now < CHRISTMAS_TIMESTAMP_STATIC) {
-            alert("⏳ 時間還沒到喔！(Wait for the time)");
-            return;
-        }
-
-        const btn = event.target;
-        try {
-            btn.disabled = true;
-            btn.innerText = "⚡ 觸發結算中 (Triggering)...";
-            
-            // 呼叫合約
-            // 修正：大幅提高 gasLimit 到 250萬，解決 Internal JSON-RPC error
-            const tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2500000 });
-            console.log("Tx sent:", tx.hash);
-            await tx.wait();
-            
-            alert("🎉 聖誕協議已啟動！大家分紅啦！(Protocol Triggered!)");
-            window.location.reload(); // 重新整理頁面以顯示結算畫面
-        } catch (err) {
-            console.error(err);
-            alert("觸發失敗 (Failed): " + (err.reason || err.message));
-            btn.disabled = false;
-            btn.innerText = "🚨 觸發聖誕協議 (Trigger Protocol)";
-        }
     }
 
     async function makeWish() {
@@ -945,6 +885,9 @@
 </script>
 </body>
 </html>
+
+
+
 
 
 
