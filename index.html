@@ -57,7 +57,6 @@
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #5c070a, 0 3px 5px rgba(0,0,0,0.5); }
         .btn:disabled { background: #555; border-color: #333; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        /* 領先者狀態按鈕 (綠色) */
         .btn-leading {
             background: linear-gradient(to bottom, var(--xmas-green), #1a3816) !important;
             border-color: #4CAF50 !important;
@@ -69,7 +68,6 @@
 
         .btn-sm { padding: 5px 10px; font-size: 0.9em; width: auto; display: inline-block; margin-left: 10px; background: #334155; border: 1px solid #aaa; color: white; cursor: pointer; border-radius: 5px; }
 
-        /* 👑 領先者顯示區塊 */
         .leader-display {
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--xmas-gold);
@@ -85,14 +83,12 @@
             font-size: 1.1em;
         }
 
-        /* 歷史紀錄表格樣式 */
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
         .history-table th { border-bottom: 2px solid var(--xmas-gold); padding: 8px; color: var(--xmas-gold); font-size: 0.85em; }
         .history-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); vertical-align: middle; }
         .winner-tag { background: var(--xmas-gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
         .protocol-tag { background: var(--xmas-green); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; white-space: nowrap; }
 
-        /* 補領專區樣式 */
         .legacy-box { background: rgba(0,0,0,0.4); border: 1px dashed var(--xmas-gold); padding: 10px; margin-top: 15px; border-radius: 8px; text-align: left; }
         .legacy-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding: 5px 0; border-bottom: 1px solid #333; font-size: 0.9em; }
 
@@ -109,11 +105,18 @@
 
         #wallet-address { font-family: monospace; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; font-size: 0.9em; display: inline-block; margin-bottom: 20px; border: 1px solid var(--xmas-gold); }
         .hidden { display: none; }
+        
         .protocol-active { border: 4px solid var(--xmas-gold); animation: glow 2s infinite alternate; background: linear-gradient(to bottom, #c30f16, #8a0b0f); }
         
         .footer-links { margin-top: 30px; font-size: 0.85em; color: #aaa; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .footer-links a { color: var(--xmas-gold); text-decoration: none; border-bottom: 1px dotted var(--xmas-gold); transition: all 0.2s; }
         .footer-links a:hover { color: #fff; border-bottom-style: solid; }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -196,10 +199,29 @@
         </div>
     </div>
 
-    <div class="card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
+    <div class="card hidden" id="protocol-card" style="border-color: var(--xmas-gold); background: rgba(50, 40, 10, 0.85);">
         <div class="stat-label" style="color: var(--xmas-gold);" data-i18n="labelProtocol">🎄 聖誕協議強制結算倒數 (Christmas Protocol)</div>
         <div class="timer-display" id="protocol-timer" style="background: var(--xmas-gold); color: var(--bg-dark); font-size: 1.5em;">Loading...</div>
-        <div style="font-size: 0.8em; color: #ccc;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
+        
+        <div id="protocol-action-area" class="hidden" style="margin-top: 15px;">
+            <p style="color: #ff4444; font-weight: bold; animation: pulse 1s infinite;">⚠️ 時間已到！必須先由一人執行觸發 (Trigger First)</p>
+            <button class="btn" onclick="triggerProtocol()" style="background: linear-gradient(to bottom, #ff0000, #990000); border: 2px solid white;">
+                🎅 步驟一：開啟聖誕協議 (只需一人點擊)
+            </button>
+        </div>
+
+        <div style="font-size: 0.8em; color: #ccc; margin-top:10px;" data-i18n="labelProtocolDesc">如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！</div>
+    </div>
+
+    <div class="card hidden protocol-active" id="christmas-card">
+        <h2 style="color: var(--xmas-gold); margin-top: 0; font-family: 'Mountains of Christmas', cursive;" data-i18n="xmasTitle">🎄 聖誕快樂！驚喜時刻！</h2>
+        <p style="font-size: 1.1em;" data-i18n="xmasDesc">聖誕老人強制打開了禮物盒！所有參與者人人有獎！</p>
+        <p data-i18n="xmasYourGift">您的專屬聖誕紅包：</p>
+        <div class="stat-value" id="christmas-gift-amount" style="font-size: 2em; margin-bottom: 20px; color: var(--snow-white); text-shadow: 0 0 10px var(--xmas-gold);">0.0 CRO</div>
+        
+        <button class="btn" style="background: linear-gradient(to bottom, var(--xmas-gold), #c37c0f); border: none; color: var(--bg-dark); font-size: 1.5em;" onclick="claimChristmas()" data-i18n="claimXmasBtn">
+            🎁 步驟二：立即拆開紅包 (人人有獎)
+        </button>
     </div>
 
     <div class="card hidden" id="dashboard" style="border-color: var(--xmas-gold);">
@@ -234,14 +256,6 @@
                 <tr><td colspan="4" style="text-align:center; color:#888;">Loading history...</td></tr>
             </tbody>
         </table>
-    </div>
-
-    <div class="card hidden protocol-active" id="christmas-card">
-        <h2 style="color: var(--xmas-gold); margin-top: 0; font-family: 'Mountains of Christmas', cursive;" data-i18n="xmasTitle">🎄 聖誕快樂！驚喜時刻！</h2>
-        <p style="font-size: 1.1em;" data-i18n="xmasDesc">聖誕老人強制打開了禮物盒！所有參與者人人有獎！</p>
-        <p data-i18n="xmasYourGift">您的專屬聖誕紅包：</p>
-        <div class="stat-value" id="christmas-gift-amount" style="font-size: 2em; margin-bottom: 20px; color: var(--snow-white); text-shadow: 0 0 10px var(--xmas-gold);">0.0 CRO</div>
-        <button class="btn" style="background: linear-gradient(to bottom, var(--xmas-gold), #c37c0f); border: none; color: var(--bg-dark);" onclick="claimChristmas()" data-i18n="claimXmasBtn">🎁 立即拆開紅包 (Open Gift)</button>
     </div>
 
     <div class="footer-links">
@@ -289,7 +303,7 @@
             xmasTitle: "🎄 聖誕快樂！驚喜時刻！",
             xmasDesc: "聖誕老人強制打開了禮物盒！所有參與者人人有獎！",
             xmasYourGift: "您的專屬聖誕紅包：",
-            claimXmasBtn: "🎁 立即拆開紅包 (Open Gift)",
+            claimXmasBtn: "🎁 步驟二：立即拆開紅包 (人人有獎)",
             labelProtocol: "🎄 聖誕協議強制結算倒數",
             labelProtocolDesc: "如果遊戲未結束，聖誕老人將在 12/26 UTC 12:00 強制平分獎金！",
             labelHistory: "📜 歷屆榮譽榜 (History)",
@@ -350,7 +364,7 @@
             xmasTitle: "🎄 Merry Christmas! Surprise Time!",
             xmasDesc: "Santa has forced the Gift Box open! Everyone gets a prize!",
             xmasYourGift: "Your Exclusive Christmas Red Envelope:",
-            claimXmasBtn: "🎁 Open Gift Now",
+            claimXmasBtn: "🎁 Step 2: Open Gift Now",
             labelProtocol: "🎄 Christmas Protocol Countdown",
             labelProtocolDesc: "If game not ended, Santa forces distribution on Dec 26, 12:00 UTC!",
             labelHistory: "📜 Past Winners (History)",
@@ -411,7 +425,7 @@
             xmasTitle: "🎄 メリークリスマス！サプライズタイム！",
             xmasDesc: "サンタがギフトボックスを強制オープン！参加者全員にプレゼント！",
             xmasYourGift: "あなたの専用お年玉：",
-            claimXmasBtn: "🎁 今すぐお年玉を開ける",
+            claimXmasBtn: "🎁 Step 2: 今すぐお年玉を開ける",
             labelProtocol: "🎄 クリスマス・プロトコル・カウントダウン",
             labelProtocolDesc: "ゲームが続いている場合、12/26 12:00 UTCにサンタが強制配当を行います！",
             labelHistory: "📜 過去の勝者 (History)",
@@ -472,7 +486,7 @@
             xmasTitle: "🎄 메리 크리스마스! 서프라이즈 타임!",
             xmasDesc: "산타가 선물 상자를 강제로 열었습니다! 참가자 전원에게 선물 증정!",
             xmasYourGift: "당신의 전용 크리스마스 세뱃돈:",
-            claimXmasBtn: "🎁 지금 세뱃돈 열기",
+            claimXmasBtn: "🎁 Step 2: 지금 세뱃돈 열기",
             labelProtocol: "🎄 크리스마스 프로토콜 카운트다운",
             labelProtocolDesc: "게임이 계속되면 12/26 12:00 UTC에 산타가 강제 배당을 진행합니다!",
             labelHistory: "📜 지난 우승자 (History)",
@@ -543,6 +557,7 @@
     // --- Config ---
     var CONTRACT_ADDR = "0xdc5240423601D7FB443b0062e22Aa08d43B6A0c1"; 
     var EXPLORER_URL = "https://cronoscan.com/address/" + CONTRACT_ADDR;
+    // 您的合約時間設定 (請確保這跟合約設定的一致，如果是 2024 年則為 1735214400)
     var CHRISTMAS_TIMESTAMP_STATIC = 1766750400; 
 
     // ABI
@@ -550,6 +565,7 @@
         "function wish() external payable",
         "function withdrawDividends(uint256 _rId) external",
         "function claimChristmasGift(uint256 _rId) external",
+        "function triggerChristmasProtocol() external",
         "function grandPot() view returns (uint256)",
         "function roundId() view returns (uint256)",
         "function rounds(uint256) view returns (bool, bool, bool, uint256, uint256, address, uint256, uint256)",
@@ -650,31 +666,41 @@
 
             updateWishButtonState();
 
-            if (totalWishes < 100) {
-                document.getElementById('timer-section').classList.add('hidden');
-                document.getElementById('warmup-section').classList.remove('hidden');
-                document.getElementById('warmup-count').innerText = totalWishes;
-            } else {
-                document.getElementById('warmup-section').classList.add('hidden');
-                document.getElementById('timer-section').classList.remove('hidden');
-                startCountdown(endTimestamp);
-            }
-
+            // 狀態 1: 聖誕協議已生效 -> 顯示領取畫面，隱藏其他
             if (christmasEnded) {
-                document.getElementById('game-card').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('christmas-card').classList.remove('hidden');
+                document.getElementById('game-card').classList.add('hidden');
+                document.getElementById('protocol-card').classList.add('hidden'); // 隱藏觸發按鈕
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('christmas-card').classList.remove('hidden'); // 顯示領取按鈕
+                
                 if (userAddress) {
                     var gift = await gameContract.getPendingChristmasGift(currentRoundId, userAddress);
                     document.getElementById('christmas-gift-amount').innerText = ethers.utils.formatEther(gift) + " CRO";
                 }
-            }
-
-            if (userAddress && !christmasEnded) {
-                var pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
-                var wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
-                document.getElementById('my-dividends').innerText = parseFloat(ethers.utils.formatEther(pendingDivs)).toFixed(4);
-                document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
+            } 
+            // 狀態 2: 聖誕協議未生效，但遊戲正常進行
+            else {
+                document.getElementById('game-card').classList.remove('hidden');
+                document.getElementById('christmas-card').classList.add('hidden');
+                
+                if (totalWishes < 100) {
+                    document.getElementById('timer-section').classList.add('hidden');
+                    document.getElementById('warmup-section').classList.remove('hidden');
+                    document.getElementById('warmup-count').innerText = totalWishes;
+                } else {
+                    document.getElementById('warmup-section').classList.add('hidden');
+                    document.getElementById('timer-section').classList.remove('hidden');
+                    startCountdown(endTimestamp);
+                }
+                
+                // 檢查是否顯示「觸發」按鈕 (只有在時間到且還沒結束時顯示)
+                document.getElementById('protocol-card').classList.remove('hidden');
+                if (userAddress) {
+                    var pendingDivs = await gameContract.getPendingDividends(currentRoundId, userAddress);
+                    var wisherInfo = await gameContract.wishers(currentRoundId, userAddress);
+                    document.getElementById('my-dividends').innerText = parseFloat(ethers.utils.formatEther(pendingDivs)).toFixed(4);
+                    document.getElementById('my-wishes').innerText = wisherInfo[1].toString();
+                }
             }
 
             updateHistory(currentRoundId);
@@ -801,16 +827,29 @@
         }, 1000);
     }
 
+    // 更新後的聖誕協議倒數與按鈕控制
     function startProtocolCountdown() {
         if (protocolInterval) clearInterval(protocolInterval);
+        
         protocolInterval = setInterval(() => {
             var now = Math.floor(Date.now() / 1000);
             var diff = CHRISTMAS_TIMESTAMP_STATIC - now;
             var timerEl = document.getElementById('protocol-timer');
+            var actionArea = document.getElementById('protocol-action-area');
             
             if (diff <= 0) {
+                // 時間到了！
                 timerEl.innerText = translations[currentLang].protocolReady;
+                // 注意：這裡只檢查時間是否到，真正是否顯示按鈕由 refreshData() 的 christmasEnded 狀態決定
+                // 防止已經結束了還顯示觸發按鈕
+                if (actionArea.classList.contains('hidden') && !document.getElementById('christmas-card').classList.contains('hidden') === false) {
+                     // 只有當 Christmas Card 是隱藏的 (代表還沒結束)，才顯示觸發按鈕
+                     actionArea.classList.remove('hidden');
+                }
             } else {
+                // 時間還沒到
+                actionArea.classList.add('hidden');
+                
                 var d = Math.floor(diff / 86400);
                 var h = Math.floor((diff % 86400) / 3600);
                 var m = Math.floor((diff % 3600) / 60);
@@ -818,6 +857,37 @@
                 timerEl.innerText = `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             }
         }, 1000);
+    }
+
+    // 步驟1：觸發聖誕協議 (只需一人執行)
+    async function triggerProtocol() {
+        if (!gameContract) return;
+        
+        // 再次確認時間
+        const now = Math.floor(Date.now() / 1000);
+        if (now < CHRISTMAS_TIMESTAMP_STATIC) {
+            alert("⏳ 時間還沒到喔！(Wait for the time)");
+            return;
+        }
+
+        const btn = event.target;
+        try {
+            btn.disabled = true;
+            btn.innerText = "⚡ 觸發結算中 (Triggering)...";
+            
+            // 呼叫合約: gasLimit 250萬
+            const tx = await gameContract.triggerChristmasProtocol({ gasLimit: 2500000 });
+            console.log("Tx sent:", tx.hash);
+            await tx.wait();
+            
+            alert("🎉 聖誕協議已啟動！畫面將切換為「領取模式」。");
+            window.location.reload(); // 重新整理後，refreshData 會偵測到狀態改變，自動切換介面
+        } catch (err) {
+            console.error(err);
+            alert("觸發失敗 (Failed): " + (err.reason || err.message));
+            btn.disabled = false;
+            btn.innerText = "🎅 步驟一：開啟聖誕協議 (只需一人點擊)";
+        }
     }
 
     async function makeWish() {
@@ -865,12 +935,14 @@
         }
     }
 
+    // 步驟2：領取聖誕禮物 (所有人)
     async function claimChristmas() {
         if (!gameContract) return;
         var btn = event.target;
         try {
             btn.disabled = true;
             btn.innerText = translations[currentLang].btnClaimingXmas;
+            // 呼叫 claimChristmasGift
             var tx = await gameContract.claimChristmasGift(currentRoundId);
             await tx.wait();
             alert(translations[currentLang].alertClaimXmasSuccess);
@@ -885,6 +957,7 @@
 </script>
 </body>
 </html>
+
 
 
 
